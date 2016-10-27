@@ -1,0 +1,7 @@
+-R coq-tools util
+-R coquelicot-2.1.1 coquelicot
+-R syntax syntax
+-R semantics semantics
+-R substitution substitution
+-R checker checker
+-R axioms axioms
