@@ -69,12 +69,16 @@ do
 				if [ -e "checker/${f}.v" ]
 				then deps+=("checker/$f")
 				else
-				    if [ -e "coq-tools/${f}.v" ]
-				    then deps+=("coq-tools/$f")
+				    if [ -e "examples/${f}.v" ]
+				    then deps+=("examples/$f")
 				    else
-					if [ -e "coquelicot-2.1.1/theories/${f}.v" ]
-					then deps+=("coquelicot-2.1.1/theories/$f")
-					else echo "${f} doesn't exist" >> debug
+					if [ -e "coq-tools/${f}.v" ]
+					then deps+=("coq-tools/$f")
+					else
+					    if [ -e "coquelicot-2.1.1/theories/${f}.v" ]
+					    then deps+=("coquelicot-2.1.1/theories/$f")
+					    else echo "${f} doesn't exist" >> debug
+					    fi
 					fi
 				    fi
 				fi
@@ -116,6 +120,7 @@ echo "	rm -f semantics/.*.aux    semantics/*.glob    semantics/*.vo"    >> Makef
 echo "	rm -f substitution/.*.aux substitution/*.glob substitution/*.vo" >> Makefile
 echo "	rm -f axioms/.*.aux       axioms/*.glob       axioms/*.vo"       >> Makefile
 echo "	rm -f checker/.*.aux      checker/*.glob      checker/*.vo"      >> Makefile
+echo "	rm -f examples/.*.aux     examples/*.glob     examples/*.vo"     >> Makefile
 
 for i in "${!aa[@]}"
 do
@@ -139,5 +144,5 @@ do
     fi
 
     echo "" >> Makefile
-    echo "	coqc -R coq-tools util -R coquelicot-2.1.1 coquelicot -R syntax syntax -R semantics semantics -R substitution substitution -R checker checker -R axioms axioms ${i}.v" >> Makefile
+    echo "	coqc -R coq-tools util -R coquelicot-2.1.1 coquelicot -R syntax syntax -R semantics semantics -R substitution substitution -R axioms axioms -R checker checker -R examples examples ${i}.v" >> Makefile
 done

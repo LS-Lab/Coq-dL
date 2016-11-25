@@ -32,7 +32,7 @@ Require Export checker.
 
 
 
-(* v≥0∧A>0 → [x'=v,v'=A&true] v≥0 *)
+(* v≥0∧A≥0 → [x'=v,v'=A&true] v≥0 *)
 
 Definition Example1 : Formula :=
   KFimply
@@ -164,7 +164,12 @@ Proof.
 Qed.
 
 
-(* cleaner proof than Example1_sequent_true because it doesn't use the add-hoc DIgeD step *)
+(*
+
+  cleaner proof than Example1_sequent_true because
+  it doesn't use the add-hoc DIgeD step
+
+ *)
 Lemma Example1_sequent_true_v2 : sequent_true (MkSeq emHyps Example1).
 Proof.
   unfold Example1.

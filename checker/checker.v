@@ -1549,42 +1549,218 @@ Qed.
 
 
 Inductive step : Type :=
+(*
+           ∅
+   ---------------- (assumption x)
+   H, x : A, J |- A
+ *)
 | step_assumption  (x : HName)                                : step
+(*
+       H, J |- B
+   ---------------- (clear x)
+   H, x : A, J |- B
+ *)
 | step_clear       (x : HName)                                : step
+(*
+   H, x : A |- B
+   ------------- (imply_right x)
+    H |- A -> B
+ *)
 | step_imply_right (x : HName)                                : step
+(*
+   H, J |- A      H, x : B, J |- C
+   ------------------------------- (imply_left x)
+       H, x : A -> B, J |- C
+ *)
 | step_imply_left  (x : HName)                                : step
+(*
+   H, x : A, J |- C      H, x : B, J |- C
+   -------------------------------------- (or_left x)
+             H, x : A \/ B, J |- C
+ *)
 | step_or_left     (x : HName)                                : step
+(*
+   H, x : A, y : B, J |- C
+   ----------------------- (and_left x y)
+    H, x : A /\ B, J |- C
+ *)
 | step_and_left    (x y : HName)                              : step
+(*
+   H, x : A -> B, y : B -> A, J |- C
+   ----------------------- (equiv_left x y)
+    H, x : A <-> B, J |- C
+ *)
 | step_equiv_left  (x y : HName)                              : step
+(*
+   H |- A -> B      H |- B -> A
+   ---------------------------- (equiv_right)
+          H |- A <-> B
+ *)
 | step_equiv_right                                            : step
+(*
+   H |- A      H |- B
+   ------------------ (and_right)
+      H |- A /\ B
+ *)
 | step_and_right                                              : step
+(*
+     H |- A
+   ----------- (or_right1)
+   H |- A \/ B
+ *)
 | step_or_right1                                              : step
+(*
+     H |- B
+   ----------- (or_right2)
+   H |- A \/ B
+ *)
 | step_or_right2                                              : step
+(*
+          H, J |- A
+   --------------------- (not_left x)
+   H, x : not(A), J |- C
+ *)
 | step_not_left    (x : HName)                                : step
+(*
+   H, x : A |- False
+   ----------------- (not_right x)
+      H |- not(A)
+ *)
 | step_not_right   (x : HName)                                : step
+(*
+   H, J, x : A, y : B, K |- C
+   -------------------------- (move_hyp)
+   H, x : A, J, y : B, K |- C
+ *)
 | step_move_hyp    (x y : HName)                              : step
+(*
+   H |- f      H, x : f |- A
+   ------------------------- (cut x f)
+             H |- A
+ *)
 | step_cut         (x : HName) (f : Formula)                  : step
+(*
+   H, x : sw(sub(DI_ge_axiom)) |- A
+   -------------------------------- (DIge x sub sw)
+               H |- A
+ *)
 | step_DIge        (x : HName) (sub : US) (sw : SW)           : step
+(*
+   H, x : sw(sub(DI_ge_diff_axiom)) |- A
+   ------------------------------------- (DIgeD x sub sw)
+                H |- A
+ *)
 | step_DIgeD       (x : HName) (sub : US) (sw : SW)           : step
+(*
+   H, x : sw(sub(ode_comm)) |- A
+   ----------------------------- (OC x sub sw)
+            H |- A
+ *)
 | step_OC          (x : HName) (sub : US) (sw : SW)           : step
+(*
+   H, x : sw(sub(DG_LR_axiom)) |- A
+   -------------------------------- (DGhostLR x sub sw)
+              H |- A
+ *)
 | step_DGhostLR    (x : HName) (sub : US) (sw : SW)           : step
+(*
+   H, x : sw(sub(sp_DG_LR_axiom)) |- A
+   ----------------------------------- (spDGhostLR x sub sw)
+                H |- A
+ *)
 | step_spDGhostLR  (x : HName) (sub : US) (sw : SW)           : step
+(*
+   H, x : sw(differential_identity_axiom) |- A
+   ------------------------------------------- (XP x sw)
+                    H |- A
+ *)
 | step_XP          (x : HName) (sw : SW)                      : step
+(*
+   H, x : sw(sub(pred_XP_axiom)) |- A
+   ---------------------------------- (PXP x sub sw)
+               H |- A
+ *)
 | step_PXP         (x : HName) (sub : US) (sw : SW)           : step
+(*
+   H, x : sw(sub(quant_pred_XP_axiom)) |- A
+   ---------------------------------------- (QPXP x sub sw)
+                  H |- A
+ *)
 | step_QPXP        (x : HName) (sub : US) (sw : SW)           : step
+(*
+   H, x : sw(sub(differential_effect_axiom)) |- A
+   ---------------------------------------------- (DE x sub sw)
+                      H |- A
+ *)
 | step_DE          (x : HName) (sub : US) (sw : SW)           : step
-| step_DEsch       (x : HName) (x : Var) (t : Term) (ode : ODE) (Q P : Formula) : step
+(*
+   H, x : sw(sub(differential_effect_sch_axiom v t ode Q P)) |- A
+   -------------------------------------------------------------- (DEsch x v t ode Q P)
+                              H |- A
+ *)
+| step_DEsch       (x : HName) (v : Var) (t : Term) (ode : ODE) (Q P : Formula) : step
+(*
+   H, x : sub(V_axiom) |- A
+   ------------------------ (V x sub)
+           H |- A
+ *)
 | step_V           (x : HName) (sub : US)                     : step
+(*
+   H, x : sub(diff_real_axiom r) |- A
+   ---------------------------------- (DR x sub sw r)
+              H |- A
+ *)
 | step_DR          (x : HName) (sub : US) (sw : SW) (r : R)   : step
+(*
+   H, x : sub(diff_realn_axiom r) |- A
+   ----------------------------------- (DRN x sub sw r)
+                H |- A
+ *)
 | step_DRN         (x : HName) (sub : US) (sw : SW) (r : nat) : step
+(*
+   ∅ |- sub(Q)      H, x : sub([a]Q) |- A
+   --------------------------------------- (G x sub)
+                    H |- A
+ *)
 | step_G           (x : HName) (sub : US)                     : step
+(*
+   H, x : sw(sub(assignment_axiom)) |- A
+   ------------------------------------- (assign x sub sw)
+                H |- A
+ *)
 | step_assign      (x : HName) (sub : US) (sw : SW)           : step
+(*
+   H, x : sw(sub(assignmentp_axiom)) |- A
+   -------------------------------------- (assignp x sub sw)
+                H |- A
+ *)
 | step_assignp     (x : HName) (sub : US) (sw : SW)           : step
+(*
+   H, x : sub(K_quant_axiom) |- A
+   ------------------------------ (K x sub)
+                H |- A
+ *)
 | step_K           (x : HName) (sub : US)                     : step
+(*
+   ∅ |- P <-> Q      H, x : [qsC -> C](qC P <> qC Q) |- A
+   ------------------------------------------------------ (CE x P Q C)
+                H |- A
+ *)
 | step_CE          (x : HName) (P Q C : Formula)              : step
-(*| step_US          (sub : US)                : step*)
+(*
+   H |- t > u
+   ---------- (GE2GT)
+   H |- t ≥ u
+ *)
+| step_GE2GT                                                  : step
+(*
+   sw(H |- A)
+   ---------- (swap sw)
+    H |- A
+ *)
 | step_swap        (sw : swapping)                            : step
 | step_focus       (n : nat)                                  : step.
+(*| step_US          (sub : US)                : step*)
 
 Ltac dstep h c :=
   destruct h;
@@ -1622,6 +1798,7 @@ Ltac dstep h c :=
   | Case_aux c "K"
   | Case_aux c "CE"
 (*  | Case_aux c "US"*)
+  | Case_aux c "GE2GT"
   | Case_aux c "Swap"
   | Case_aux c "Focus"
   ].
@@ -2015,6 +2192,16 @@ Definition apply_step (ps : proof_state) (s : step) : proof_state :=
     end
 *)
 
+  | step_GE2GT =>
+    match ps with
+    | MkSeq H C :: seqs =>
+      match C with
+      | KFgreaterEqual P Q => MkSeq H (KFgreater P Q) :: seqs
+      | _ => ps
+      end
+    | _ => ps
+    end
+
   | step_swap sw =>
     match ps with
     | seq :: seqs => swap_sequent sw seq :: seqs
@@ -2378,6 +2565,16 @@ Proof.
   { apply (hhyps (MkHyp x Fx)); allrw in_app_iff; allrw @in_snoc; tcsp. }
 Qed.
 
+Lemma sequent_true_GE2GT :
+  forall H A B,
+    sequent_true (H ⊢ KFgreater A B)
+    -> sequent_true (H ⊢ KFgreaterEqual A B).
+Proof.
+  introv st hhyps; simpl in *.
+  apply Rgt_ge.
+  apply st; auto.
+Qed.
+
 Lemma apply_step_preserves_soundness :
   forall ps s,
     sound_proof_state (apply_step ps s)
@@ -2712,6 +2909,14 @@ Proof.
     apply Rule_thin_all_hyps_true; introv i; simpl in i; repndors; subst; tcsp.
     apply US_seq_Rule_true; introv i; simpl in i; repndors; subst; tcsp.
     apply CE_Rule_sch_true; introv i; simpl in i; repndors; subst; tcsp. }
+
+  { Case "GE2GT".
+
+    destruct ps; simpl in *; auto.
+    destruct s as [H F]; simpl in *.
+    destruct F; simpl in *; auto.
+    allrw sound_proof_state_cons; repnd; dands; auto.
+    apply sequent_true_GE2GT; auto. }
 
   { Case "Swap".
 

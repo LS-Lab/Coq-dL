@@ -3,5 +3,6 @@
 -R syntax syntax
 -R semantics semantics
 -R substitution substitution
--R checker checker
 -R axioms axioms
+-R checker checker
+-R examples examples
