@@ -1754,6 +1754,12 @@ Inductive step : Type :=
  *)
 | step_GE2GT                                                  : step
 (*
+             ∅
+   -------------------- (false_left)
+   H, x : False, J |- C
+ *)
+| step_false_left (x : HName)                                 : step
+(*
    sw(H |- A)
    ---------- (swap sw)
     H |- A
@@ -1799,6 +1805,7 @@ Ltac dstep h c :=
   | Case_aux c "CE"
 (*  | Case_aux c "US"*)
   | Case_aux c "GE2GT"
+  | Case_aux c "FalseLeft"
   | Case_aux c "Swap"
   | Case_aux c "Focus"
   ].
@@ -2202,6 +2209,16 @@ Definition apply_step (ps : proof_state) (s : step) : proof_state :=
     | _ => ps
     end
 
+  | step_false_left x =>
+    match ps with
+    | MkSeq H C :: seqs =>
+      match find_hyp H x with
+      | Some (MkDecompH _ KFfalse _) => seqs
+      | _ => ps
+      end
+    | _ => ps
+    end
+
   | step_swap sw =>
     match ps with
     | seq :: seqs => swap_sequent sw seq :: seqs
@@ -2575,6 +2592,15 @@ Proof.
   apply st; auto.
 Qed.
 
+Lemma sequent_true_false_left :
+  forall G x J F, sequent_true (((G • (x : KFfalse)) ⊕ J) ⊢ F).
+Proof.
+  introv hyps; simpl in *.
+  pose proof (hyps (x : KFfalse)) as q; simpl in q.
+  autodimp q hyp; try (complete (inversion q)).
+  rewrite in_app_iff; rewrite in_snoc; tcsp.
+Qed.
+
 Lemma apply_step_preserves_soundness :
   forall ps s,
     sound_proof_state (apply_step ps s)
@@ -2917,6 +2943,17 @@ Proof.
     destruct F; simpl in *; auto.
     allrw sound_proof_state_cons; repnd; dands; auto.
     apply sequent_true_GE2GT; auto. }
+
+  { Case "FalseLeft".
+
+    destruct ps; simpl in *; auto.
+    destruct s as [H F]; simpl in *.
+    remember (find_hyp H x) as fxh; destruct fxh; symmetry in Heqfxh; auto.
+    destruct d as [G Fx J].
+    destruct Fx; simpl in *; auto.
+    apply find_hyp_some_implies in Heqfxh; subst.
+    allrw sound_proof_state_cons; repnd; dands; auto.
+    apply sequent_true_false_left. }
 
   { Case "Swap".
 
