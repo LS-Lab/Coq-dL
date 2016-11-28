@@ -46,10 +46,6 @@ Inductive subterm : Term -> Term -> Prop :=
 | subterm_minus_r  : forall a b, subterm b (KTminus  a b)
 | subterm_times_l  : forall a b, subterm a (KTtimes  a b)
 | subterm_times_r  : forall a b, subterm b (KTtimes  a b)
-| subterm_divide_l : forall a b, subterm a (KTdivide a b)
-| subterm_divide_r : forall a b, subterm b (KTdivide a b)
-| subterm_power_l  : forall a b, subterm a (KTpower  a b)
-| subterm_power_r  : forall a b, subterm b (KTpower  a b)
 | subterm_diff : forall t, subterm t (KTdifferential t).
 Hint Constructors subterm.
 

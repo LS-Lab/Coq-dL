@@ -3363,14 +3363,6 @@ Proof.
     apply ex_partial_derive_st_func_partial_derive_st_all_mult; auto.
   }
 
-  { Case "KTdivide".
-    apply ex_partial_derive_st_func_partial_derive_st_all_const.
-  }
-
-  { Case "KTpower".
-    apply ex_partial_derive_st_func_partial_derive_st_all_const.
-  }
-
   { Case "KTdifferential".
     introv d cond; subst.
     eapply ex_partial_derive_ext;
@@ -3575,8 +3567,6 @@ Fixpoint all_term_vars (f : Term) : list KVariable :=
   | KTplus   l r => all_term_vars l ++ all_term_vars r
   | KTminus  l r => all_term_vars l ++ all_term_vars r
   | KTtimes  l r => all_term_vars l ++ all_term_vars r
-  | KTdivide l r => all_term_vars l ++ all_term_vars r
-  | KTpower  l r => all_term_vars l ++ all_term_vars r
   | KTdifferential theta => all_term_vars theta
   end.
 
@@ -3591,8 +3581,6 @@ Fixpoint sub_dots_term (t : Term) {m} (u : Vector.t Term m) : Term :=
   | KTplus   l r => KTplus   (sub_dots_term l u) (sub_dots_term r u)
   | KTminus  l r => KTminus  (sub_dots_term l u) (sub_dots_term r u)
   | KTtimes  l r => KTtimes  (sub_dots_term l u) (sub_dots_term r u)
-  | KTdivide l r => KTdivide (sub_dots_term l u) (sub_dots_term r u)
-  | KTpower  l r => KTpower  (sub_dots_term l u) (sub_dots_term r u)
   | KTdifferential t => KTdifferential (sub_dots_term t u)
   end.
 

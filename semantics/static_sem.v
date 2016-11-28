@@ -105,8 +105,6 @@ Fixpoint bound_vars_formula
 
     | KFdiamond alpha  F
     | KFbox     alpha  F => EAssignables_app (bound_vars_program alpha) (bound_vars_formula F)
-
-    | KFdifferentialFormula F => FCS_finite []
 end
 
 (** Bound variables of hybrid programs --- see Definition 7, Section 2.3 *)
@@ -122,11 +120,6 @@ with bound_vars_program
        | KPloop a => bound_vars_program a
 
        | KPodeSystem ode psi => bound_vars_ode ode
-
-       | KPsend      c theta      => FCS_finite []
-       | KPreceive   c vars       => vars2ext vars
-       | KPbroadcast c theta vars => vars2ext vars
-       | KPparallel  cl cr a b    => EAssignables_app (bound_vars_program a) (bound_vars_program b)
        end.
 
 (*
@@ -175,11 +168,6 @@ Fixpoint must_bound_vars_program
   | KPloop alpha => FCS_finite []
 
   | KPodeSystem ode psi => bound_vars_program (KPodeSystem ode psi)
-
-  | KPparallel cl cr a b => EAssignables_app (must_bound_vars_program a) (must_bound_vars_program b)
-  | KPsend c theta   => bound_vars_program (KPsend c theta)
-  | KPreceive c vars => bound_vars_program (KPreceive c vars)
-  | KPbroadcast c theta vars => bound_vars_program (KPbroadcast c theta vars)
   end.
 
 
@@ -239,8 +227,6 @@ Fixpoint free_vars_formula
     EAssignables_app
       (free_vars_program alpha)
       (remove_eassignables (free_vars_formula F) (must_bound_vars_program alpha))
-
-  | KFdifferentialFormula F => FCS_finite []
   end
 
 (** free variables of hybrid program --- see Definition 9, Section 2.3 *)
@@ -259,11 +245,6 @@ with free_vars_program
        | KPloop a => free_vars_program a
 
        | KPodeSystem ode psi => EAssignables_app (free_vars_ode ode) (free_vars_formula psi)
-
-       | KPsend      c theta      => FCS_finite (free_vars_term theta)
-       | KPreceive   c vars       => FCS_finite []
-       | KPbroadcast c theta vars => FCS_finite (free_vars_term theta)
-       | KPparallel  cl cr a b    => EAssignables_app (free_vars_program a) (free_vars_program b)
        end.
 
 
@@ -280,9 +261,7 @@ Fixpoint term_signature
     | KTneg    l   => term_signature l
     | KTplus   l r
     | KTminus  l r
-    | KTtimes  l r
-    | KTdivide l r
-    | KTpower  l r => term_signature l ++ term_signature r
+    | KTtimes  l r => term_signature l ++ term_signature r
     | KTdifferential theta => term_signature theta
     end.
 
@@ -331,8 +310,6 @@ Fixpoint formula_signature
 
     | KFdiamond alpha F
     | KFbox     alpha F => program_signature alpha ++ formula_signature F
-
-    | KFdifferentialFormula F => formula_signature F
 end
 
 (** Hybrid program signature --- see Section 2.3 *)
@@ -347,10 +324,4 @@ with program_signature
        | KPcompose a b => program_signature a ++ program_signature b
        | KPloop a => program_signature a
        | KPodeSystem ode psi => ode_signature ode ++ formula_signature psi
-
-       | KPparallel cl cr l r => program_signature l ++ program_signature r
-       (* should channels be in the signature? *)
-       | KPsend ch e => term_signature e
-       | KPreceive ch vs => []
-       | KPbroadcast ch e vs => term_signature e
 end.

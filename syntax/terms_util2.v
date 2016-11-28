@@ -46,11 +46,7 @@ Tactic Notation "prog_ind" ident(h) ident(c) :=
   | Case_aux c "KPtest"
   | Case_aux c "KPchoice"
   | Case_aux c "KPcompose"
-  | Case_aux c "KPparallel"
   | Case_aux c "KPloop"
-  | Case_aux c "KPsend"
-  | Case_aux c "KPreceive"
-  | Case_aux c "KPbroadcast"
   | Case_aux c "KPodeSystem"
   ].
 
@@ -76,7 +72,6 @@ Tactic Notation "form_ind" ident(h) ident(c) :=
   | Case_aux c "KFexistsVars"
   | Case_aux c "KFbox"
   | Case_aux c "KFdiamond"
-  | Case_aux c "KFdifferentialFormula"
   ].
 
 Tactic Notation "sp_term_ind" ident(h) ident(c) :=
@@ -90,8 +85,6 @@ Tactic Notation "sp_term_ind" ident(h) ident(c) :=
   | Case_aux c "KTplus"
   | Case_aux c "KTminus"
   | Case_aux c "KTtimes"
-  | Case_aux c "KTdivide"
-  | Case_aux c "KTpower"
   | Case_aux c "KTdifferential"
   ].
 
@@ -106,8 +99,6 @@ Tactic Notation "term_dest" ident(h) ident(c) :=
   | Case_aux c "KTplus"
   | Case_aux c "KTminus"
   | Case_aux c "KTtimes"
-  | Case_aux c "KTdivide"
-  | Case_aux c "KTpower"
   | Case_aux c "KTdifferential"
   ].
 
@@ -116,7 +107,6 @@ Tactic Notation "term_dest" ident(h) ident(c) :=
 Fixpoint term_size (t : Term) : nat :=
   match t with
   | KTdot _ => 1%nat
-  (*  | KTanything => []*)
   | KTfuncOf f m args => S (Vector.fold_left (fun n t => (n + term_size t)%nat) 0%nat args)
   | KTnumber r   => 1%nat
   | KTread   x   => 1%nat
@@ -124,8 +114,6 @@ Fixpoint term_size (t : Term) : nat :=
   | KTplus   l r => S (term_size l + term_size r)
   | KTminus  l r => S (term_size l + term_size r)
   | KTtimes  l r => S (term_size l + term_size r)
-  | KTdivide l r => S (term_size l + term_size r)
-  | KTpower  l r => S (term_size l + term_size r)
   | KTdifferential t => S (term_size t)
   end.
 
@@ -143,12 +131,10 @@ Lemma better_Term_ind :
     -> (forall l r : Term, P l -> P r -> P (KTplus   l r))
     -> (forall l r : Term, P l -> P r -> P (KTminus  l r))
     -> (forall l r : Term, P l -> P r -> P (KTtimes  l r))
-    -> (forall l r : Term, P l -> P r -> P (KTdivide l r))
-    -> (forall l r : Term, P l -> P r -> P (KTpower  l r))
     -> (forall t : Term, P t -> P (KTdifferential t))
     -> forall t : Term, P t.
 Proof.
- intros P hdot hfunc hnum hread hneg hplus hminus htimes hdiv hpow hdiff.
+ intros P hdot hfunc hnum hread hneg hplus hminus htimes hdiff.
 
  assert (forall n t, term_size t = n -> P t) as Hass;
    [|introv;eapply Hass; reflexivity].
@@ -193,20 +179,6 @@ Proof.
    { eapply Hind;[|eauto]; omega. }
  }
 
- { Case "KTdivide".
-   destruct n; ginv.
-   apply hdiv.
-   { eapply Hind;[|eauto]; omega. }
-   { eapply Hind;[|eauto]; omega. }
- }
-
- { Case "KTpower".
-   destruct n; ginv.
-   apply hpow.
-   { eapply Hind;[|eauto]; omega. }
-   { eapply Hind;[|eauto]; omega. }
- }
-
  { Case "KTdifferential".
    destruct n; ginv.
    apply hdiff.
@@ -228,12 +200,10 @@ Lemma better_Term_rec_o :
     -> (forall l r : Term, P l -> P r -> P (KTplus   l r))
     -> (forall l r : Term, P l -> P r -> P (KTminus  l r))
     -> (forall l r : Term, P l -> P r -> P (KTtimes  l r))
-    -> (forall l r : Term, P l -> P r -> P (KTdivide l r))
-    -> (forall l r : Term, P l -> P r -> P (KTpower  l r))
     -> (forall t : Term, P t -> P (KTdifferential t))
     -> forall t : Term, P t.
 Proof.
- intros P hdot hfunc hnum hread hneg hplus hminus htimes hdiv hpow hdiff.
+ intros P hdot hfunc hnum hread hneg hplus hminus htimes hdiff.
 
  assert (forall n t, term_size t = n -> P t) as Hass;
    [|introv;eapply Hass; reflexivity].
@@ -274,20 +244,6 @@ Proof.
  { Case "KTtimes".
    destruct n; ginv.
    apply htimes.
-   { eapply Hind;[|eauto]; omega. }
-   { eapply Hind;[|eauto]; omega. }
- }
-
- { Case "KTdivide".
-   destruct n; ginv.
-   apply hdiv.
-   { eapply Hind;[|eauto]; omega. }
-   { eapply Hind;[|eauto]; omega. }
- }
-
- { Case "KTpower".
-   destruct n; ginv.
-   apply hpow.
    { eapply Hind;[|eauto]; omega. }
    { eapply Hind;[|eauto]; omega. }
  }
@@ -403,12 +359,10 @@ Lemma better_Term_rec :
     -> (forall l r : Term, P l -> P r -> P (KTplus   l r))
     -> (forall l r : Term, P l -> P r -> P (KTminus  l r))
     -> (forall l r : Term, P l -> P r -> P (KTtimes  l r))
-    -> (forall l r : Term, P l -> P r -> P (KTdivide l r))
-    -> (forall l r : Term, P l -> P r -> P (KTpower  l r))
     -> (forall t : Term, P t -> P (KTdifferential t))
     -> forall t : Term, P t.
 Proof.
- intros P hdot hfunc hnum hread hneg hplus hminus htimes hdiv hpow hdiff.
+ intros P hdot hfunc hnum hread hneg hplus hminus htimes hdiff.
 
  assert (forall n t, term_size t = n -> P t) as Hass;
    [|introv;eapply Hass; reflexivity].
@@ -453,20 +407,6 @@ Proof.
    { apply (Hind (term_size t2)); auto; apply le_n_S2; apply ge_plus_weak_right. }
  }
 
- { Case "KTdivide".
-   destruct n; ginv.
-   apply hdiv.
-   { apply (Hind (term_size t1)); auto; apply le_n_S2; apply ge_plus_weak_left. }
-   { apply (Hind (term_size t2)); auto; apply le_n_S2; apply ge_plus_weak_right. }
- }
-
- { Case "KTpower".
-   destruct n; ginv.
-   apply hpow.
-   { apply (Hind (term_size t1)); auto; apply le_n_S2; apply ge_plus_weak_left. }
-   { apply (Hind (term_size t2)); auto; apply le_n_S2; apply ge_plus_weak_right. }
- }
-
  { Case "KTdifferential".
    destruct n; ginv.
    apply hdiff.
@@ -485,8 +425,6 @@ Tactic Notation "term_ind" ident(h) ident(c) :=
   | Case_aux c "KTplus"
   | Case_aux c "KTminus"
   | Case_aux c "KTtimes"
-  | Case_aux c "KTdivide"
-  | Case_aux c "KTpower"
   | Case_aux c "KTdifferential"
   ].
 
@@ -501,8 +439,6 @@ Tactic Notation "term_rec" ident(h) ident(c) :=
   | Case_aux c "KTplus"
   | Case_aux c "KTminus"
   | Case_aux c "KTtimes"
-  | Case_aux c "KTdivide"
-  | Case_aux c "KTpower"
   | Case_aux c "KTdifferential"
   ].
 
@@ -542,7 +478,6 @@ Lemma Formula_Program_rec_2 :
         P0 prog -> forall child : Formula, P child -> P (KFbox prog child)) ->
     (forall prog : Program,
         P0 prog -> forall child : Formula, P child -> P (KFdiamond prog child)) ->
-    (forall child : Formula, P child -> P (KFdifferentialFormula child)) ->
     (forall name : ProgramConstName, P0 (KPconstant name)) ->
     (forall (x : KAssignable) (e : Term), P0 (KPassign x e)) ->
     (forall x : KAssignable, P0 (KPassignAny x)) ->
@@ -551,14 +486,7 @@ Lemma Formula_Program_rec_2 :
         P0 left -> forall right : Program, P0 right -> P0 (KPchoice left right)) ->
     (forall left : Program,
         P0 left -> forall right : Program, P0 right -> P0 (KPcompose left right)) ->
-    (forall (Cl Cr : list KChannel) (left : Program),
-        P0 left ->
-        forall right : Program, P0 right -> P0 (KPparallel Cl Cr left right)) ->
     (forall child : Program, P0 child -> P0 (KPloop child)) ->
-    (forall (c : KChannel) (e : Term), P0 (KPsend c e)) ->
-    (forall (c : KChannel) (vars : list KVariable), P0 (KPreceive c vars)) ->
-    (forall (c : KChannel) (e : Term) (vars : list KVariable),
-        P0 (KPbroadcast c e vars)) ->
     (forall (ode : ODE) (constraint : Formula),
         P constraint -> P0 (KPodeSystem ode constraint)) ->
     (forall f : Formula, P f) * (forall f : Program, P0 f).
@@ -591,7 +519,6 @@ Tactic Notation "form_prog_ind" ident(c) :=
   | Case_aux c "KFexistsVars"
   | Case_aux c "KFbox"
   | Case_aux c "KFdiamond"
-  | Case_aux c "KFdifferentialFormula"
 
   | Case_aux c "KPconstant"
   | Case_aux c "KPassign"
@@ -599,11 +526,7 @@ Tactic Notation "form_prog_ind" ident(c) :=
   | Case_aux c "KPtest"
   | Case_aux c "KPchoice"
   | Case_aux c "KPcompose"
-  | Case_aux c "KPparallel"
   | Case_aux c "KPloop"
-  | Case_aux c "KPsend"
-  | Case_aux c "KPreceive"
-  | Case_aux c "KPbroadcast"
   | Case_aux c "KPodeSystem"
   ].
 
@@ -629,7 +552,6 @@ Tactic Notation "form_prog_rec" ident(c) :=
   | Case_aux c "KFexistsVars"
   | Case_aux c "KFbox"
   | Case_aux c "KFdiamond"
-  | Case_aux c "KFdifferentialFormula"
 
   | Case_aux c "KPconstant"
   | Case_aux c "KPassign"
@@ -637,10 +559,6 @@ Tactic Notation "form_prog_rec" ident(c) :=
   | Case_aux c "KPtest"
   | Case_aux c "KPchoice"
   | Case_aux c "KPcompose"
-  | Case_aux c "KPparallel"
   | Case_aux c "KPloop"
-  | Case_aux c "KPsend"
-  | Case_aux c "KPreceive"
-  | Case_aux c "KPbroadcast"
   | Case_aux c "KPodeSystem"
   ].

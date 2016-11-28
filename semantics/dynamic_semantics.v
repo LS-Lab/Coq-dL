@@ -91,10 +91,6 @@ Fixpoint dynamic_semantics_term
     | KTtimes l r =>
       dynamic_semantics_term I s l * dynamic_semantics_term I s r
 
-    | KTdivide l r => R0
-
-    | KTpower l r => R0
-
     (* Why do we only derive over variables and not over prime variables? *)
     | KTdifferential theta =>
       big_sum
@@ -232,8 +228,6 @@ Fixpoint wf_formula (I : interpretation) (F : Formula) : bool :=
 
   | KFdiamond P F => wf_program I P && wf_formula I F
   | KFbox     P F => wf_program I P && wf_formula I F
-
-  | KFdifferentialFormula F => wf_formula I F
   end
 
 with wf_program (I : interpretation) (P : Program) : bool :=
@@ -250,11 +244,6 @@ with wf_program (I : interpretation) (P : Program) : bool :=
        | KPcompose a b => wf_program I a && wf_program I b
 
        | KPloop p => wf_program I p
-
-       | KPparallel ch1 ch2 p1 p2 => wf_program I p1 && wf_program I p2
-       | KPsend ch e => true
-       | KPreceive ch vs => true
-       | KPbroadcast ch e vs => true
 
        | KPodeSystem ode F => wf_ode I ode && wf_formula I F
        end.
@@ -347,8 +336,6 @@ Fixpoint dynamic_semantics_formula
          forall w,
            dynamic_semantics_program I alpha S w
            -> dynamic_semantics_formula I F w
-
-     | KFdifferentialFormula F => FalseFormulaSem (* !!!!! *)
     end
 
 (** Semantics of hybrid programs --- see Definition 6, Section 2.2 *)
@@ -381,11 +368,6 @@ with dynamic_semantics_program
 
          | KPloop p =>
            fun v w => program_close (dynamic_semantics_program I p) v w
-
-         | KPparallel ch1 ch2 p1 p2 => FalseProgramSem (* TODO *)
-         | KPsend ch e => FalseProgramSem (* TODO *)
-         | KPreceive ch vs => FalseProgramSem (* TODO *)
-         | KPbroadcast ch e vs => FalseProgramSem (* TODO *)
 
          | KPodeSystem ode psi =>
            fun v w =>

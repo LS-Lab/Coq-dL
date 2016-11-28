@@ -55,7 +55,6 @@ Inductive KTnum :=
 (** Terms --- see Definition 1, Section 2.1 *)
 Inductive Term : Type :=
 | KTdot          (n : nat)             : Term        (* dot symbol for terms *)
-(*  | KTanything                          : Term        (* all (reals) term *)*)
 | KTfuncOf       (f : FunctionSymbol)
                  (n : nat)
                  (a : Vector.t Term n) : Term        (* application of function symbol *)
@@ -65,8 +64,6 @@ Inductive Term : Type :=
 | KTplus         (left right : Term)   : Term        (* addition       x+y *)
 | KTminus        (left right : Term)   : Term        (* subtraction    x-y *)
 | KTtimes        (left right : Term)   : Term        (* multiplication x*y *)
-| KTdivide       (left right : Term)   : Term        (* division       x/y *)
-| KTpower        (left right : Term)   : Term        (* power          x^y *)
 | KTdifferential (child : Term)        : Term        (* differential   x'  *)
 .
 
@@ -87,10 +84,8 @@ Inductive AtomicODE : Type :=
 
 (** ODE *)
 Inductive ODE : Type :=
-(*| ODEem : ODE*)
 | ODEatomic (child : AtomicODE)  : ODE
 | ODEprod (left righ : ODE)      : ODE (* . , . *)
-(* todo: left associative form of differential product (i.e.: (. , .) , .) -> (. , (. , .)) *)
 .
 
 Coercion ODEatomic : AtomicODE >-> ODE.
@@ -122,8 +117,6 @@ Inductive Formula : Type :=
 (* modal formulas *)
 | KFbox         (prog : Program) (child : Formula)           : Formula           (* [alpha] p *)
 | KFdiamond     (prog : Program) (child : Formula)           : Formula           (* <alpha> p *)
-(* differential formula (p)' *)
-| KFdifferentialFormula (child : Formula)                    : Formula           (* (p)' *)
 
 (** Hybrid programs --- see Definition 3, Section 2.1 *)
 with Program : Type :=
@@ -133,16 +126,7 @@ with Program : Type :=
      | KPtest         (cond : Formula)                         : Program           (* ?cond *)
      | KPchoice       (left : Program)(right : Program)        : Program           (* alpha u beta *)
      | KPcompose      (left : Program)(right : Program)        : Program           (* alpha ; beta *)
-     | KPparallel     (Cl : list KChannel)(Cr : list KChannel)
-                      (left : Program)(right : Program)        : Program           (* alpha Cl_||_Cr beta *)
      | KPloop         (child : Program)                        : Program           (* alpha* *)
-     (* communication *)
-     | KPsend         (c : KChannel) (e : Term)                : Program           (* c!e *)
-     | KPreceive      (c : KChannel) (vars : list KVariable)   : Program           (* c?X *)
-     | KPbroadcast    (c : KChannel)
-                      (e : Term)
-                      (vars : list KVariable)                  : Program     (* B^c(e,X) *)
-     (* todo games *)
      | KPodeSystem (ode : ODE) (constraint : Formula) : Program
 .
 

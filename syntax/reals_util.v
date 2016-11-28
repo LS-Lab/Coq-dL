@@ -109,6 +109,7 @@ Record preal : Set :=
       preal_r :> R;
       preal_cond : (0 <= preal_r)%R
     }.
+Hint Resolve preal_cond : core.
 
 (* this definition is used in definition of dynamic semantics of programs *)
 (** returns all reals which are greater or equal than zero, but less or equal than r  *)
@@ -188,3 +189,20 @@ Fixpoint big_sum {T} (vars : list T) (f : T -> R) : R :=
   | [] => R0
   | h :: t => Rplus (f h) (big_sum t f)
   end.
+
+Lemma R_move_sub1 :
+  forall (a b c d : R),
+    (a - b <= c - d)%R -> (a <= c - (d - b))%R.
+Proof.
+  introv h.
+  apply (Rplus_le_compat_r b) in h.
+  repeat rewrite (Rsub_def (F_R Rfield)) in h.
+  rewrite <- (Radd_assoc (F_R Rfield)) in h.
+  autorewrite with core in *.
+  rewrite <- (Radd_assoc (F_R Rfield)) in h.
+
+  rewrite (Rsub_def (F_R Rfield) c (d - b)%R).
+  rewrite Ropp_minus_distr'.
+  rewrite (Rsub_def (F_R Rfield)).
+  rewrite (Radd_comm (F_R Rfield) b); auto.
+Qed.

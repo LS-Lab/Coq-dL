@@ -293,16 +293,6 @@ Proof.
       [left;apply IHt1|right;apply IHt2];auto.
   }
 
-  { Case "KTdivide".
-    apply in_app_iff in i; apply in_app_iff; repndors;
-      [left;apply IHt1|right;apply IHt2];auto.
-  }
-
-  { Case "KTpower".
-    apply in_app_iff in i; apply in_app_iff; repndors;
-      [left;apply IHt1|right;apply IHt2];auto.
-  }
-
   { Case "KTdifferential".
     apply in_app_iff; auto.
   }
@@ -558,20 +548,8 @@ Proof.
     rewrite eassignables_subset_app_l_true_iff; dands;
       apply implies_eassignables_subset_app_r_true;[left|right]; auto. }
 
-  { Case "KPparallel".
-    rewrite eassignables_subset_app_l_true_iff; dands;
-      apply implies_eassignables_subset_app_r_true;[left|right]; auto. }
-
   { Case "KPloop".
     remember (bound_vars_program P) as e; destruct e; auto. }
-
-  { Case "KPreceive".
-    eauto 2 with core.
-    apply included_dec_prop; apply subset_refl. }
-
-  { Case "KPbroadcast".
-    eauto 2 with core.
-    apply included_dec_prop; apply subset_refl. }
 Qed.
 
 (** if states s1 and s2 are equal on EAssignables e1 and e2,

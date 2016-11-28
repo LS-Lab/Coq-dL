@@ -34,16 +34,13 @@ Fixpoint free_vars_term
          (t : Term) : list KAssignable :=
   match t with
   | KTdot _        => []
-(*  | KTanything   => [EA_all]*)
   | KTfuncOf f _ args => vec_flatten (Vector.map free_vars_term args)
   | KTnumber r     => []
   | KTread x       => [x]
   | KTneg    l     => free_vars_term l
   | KTplus   l r
   | KTminus  l r
-  | KTtimes  l r
-  | KTdivide l r
-  | KTpower  l r   => free_vars_term l ++ free_vars_term r
+  | KTtimes  l r   => free_vars_term l ++ free_vars_term r
   | KTdifferential theta =>
     free_vars_term theta ++ map KD (free_vars_term theta)
   end.

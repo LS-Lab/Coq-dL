@@ -224,8 +224,6 @@ Fixpoint nodiff (t : Term) : bool :=
   | KTplus   l r   => nodiff l && nodiff r
   | KTminus  l r   => nodiff l && nodiff r
   | KTtimes  l r   => nodiff l && nodiff r
-  | KTdivide l r   => nodiff l && nodiff r
-  | KTpower  l r   => nodiff l && nodiff r
   | KTdifferential theta => false
   end.
 

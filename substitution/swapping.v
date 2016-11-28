@@ -106,8 +106,6 @@ Fixpoint swap_term (sw : swapping) (t : Term) : Term :=
   | KTplus   l r       => KTplus   (swap_term sw l) (swap_term sw r)
   | KTminus  l r       => KTminus  (swap_term sw l) (swap_term sw r)
   | KTtimes  l r       => KTtimes  (swap_term sw l) (swap_term sw r)
-  | KTdivide l r       => KTdivide (swap_term sw l) (swap_term sw r)
-  | KTpower  l r       => KTpower  (swap_term sw l) (swap_term sw r)
   | KTdifferential t   => KTdifferential (swap_term sw t)
   end.
 
@@ -168,8 +166,6 @@ Fixpoint swap_formula  (sw : swapping) (F : Formula) : Formula :=
 
   | KFbox     p f           => KFbox     (swap_program sw p) (swap_formula sw f)
   | KFdiamond p f           => KFdiamond (swap_program sw p) (swap_formula sw f)
-
-  | KFdifferentialFormula f => KFdifferentialFormula (swap_formula sw f)
   end
 
 (**
@@ -187,13 +183,8 @@ Fixpoint swap_formula  (sw : swapping) (F : Formula) : Formula :=
          | KPchoice l r           => KPchoice (swap_program sw l) (swap_program sw r)
 
          | KPcompose l r          => KPcompose (swap_program sw l) (swap_program sw r)
-         | KPparallel cl cr l r   => KPparallel cl cr (swap_program sw l) (swap_program sw r)
 
          | KPloop p               => KPloop (swap_program sw p)
-
-         | KPsend c t            => KPsend c (swap_term sw t)
-         | KPreceive c lv        => KPreceive c (swap_vars sw lv)
-         | KPbroadcast c t lv    => KPbroadcast c (swap_term sw t) (swap_vars sw lv)
 
          | KPodeSystem ode f     => KPodeSystem (swap_ode sw ode) (swap_formula sw f)
          end.

@@ -1239,14 +1239,6 @@ Proof.
     apply ex_all_partial_derive_st_mult;auto.
   }
 
-  { Case "KTdivide".
-    apply ex_all_partial_derive_st_constant;auto.
-  }
-
-  { Case "KTpower".
-    apply ex_all_partial_derive_st_constant;auto.
-  }
-
   { Case "KTdifferential".
     apply (ex_all_partial_derive_st_differential _ (fun s => dynamic_semantics_term I s t)); auto.
   }

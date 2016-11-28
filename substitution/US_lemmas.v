@@ -1688,30 +1688,6 @@ Proof.
     simpl; introv i; allrw in_app_iff; tcsp.
   }
 
-  { Case "KTdivide".
-    dest_sub x; ginv; symmetry in Heqx.
-    dest_sub y; ginv; symmetry in Heqy.
-    pose proof (eassignables_subset_divide1 s t1 t2) as h1; rewrite e in h1.
-    pose proof (eassignables_subset_divide2 s t1 t2) as h2; rewrite e in h2.
-    apply eassignables_subset_nil_implies in h1; auto.
-    apply eassignables_subset_nil_implies in h2; auto.
-    apply IHt1 in Heqx; auto.
-    apply IHt2 in Heqy; auto.
-    simpl; introv i; allrw in_app_iff; tcsp.
-  }
-
-  { Case "KTpower".
-    dest_sub x; ginv; symmetry in Heqx.
-    dest_sub y; ginv; symmetry in Heqy.
-    pose proof (eassignables_subset_power1 s t1 t2) as h1; rewrite e in h1.
-    pose proof (eassignables_subset_power2 s t1 t2) as h2; rewrite e in h2.
-    apply eassignables_subset_nil_implies in h1; auto.
-    apply eassignables_subset_nil_implies in h2; auto.
-    apply IHt1 in Heqx; auto.
-    apply IHt2 in Heqy; auto.
-    simpl; introv i; allrw in_app_iff; tcsp.
-  }
-
   { Case "KTdifferential".
     unfold on_test in ust.
     dest_cases fv.
@@ -1909,30 +1885,6 @@ Proof.
     simpl; introv i; allrw in_app_iff; tcsp.
   }
 
-  { Case "KTdivide".
-    dest_sub x; ginv; symmetry in Heqx.
-    dest_sub y; ginv; symmetry in Heqy.
-    pose proof (eassignables_subset_divide1 s t1 t2) as h1; rewrite e in h1.
-    pose proof (eassignables_subset_divide2 s t1 t2) as h2; rewrite e in h2.
-    apply eassignables_subset_nil_implies in h1; auto.
-    apply eassignables_subset_nil_implies in h2; auto.
-    apply IHt1 in Heqx; auto.
-    apply IHt2 in Heqy; auto.
-    simpl; introv i; allrw in_app_iff; tcsp.
-  }
-
-  { Case "KTpower".
-    dest_sub x; ginv; symmetry in Heqx.
-    dest_sub y; ginv; symmetry in Heqy.
-    pose proof (eassignables_subset_power1 s t1 t2) as h1; rewrite e in h1.
-    pose proof (eassignables_subset_power2 s t1 t2) as h2; rewrite e in h2.
-    apply eassignables_subset_nil_implies in h1; auto.
-    apply eassignables_subset_nil_implies in h2; auto.
-    apply IHt1 in Heqx; auto.
-    apply IHt2 in Heqy; auto.
-    simpl; introv i; allrw in_app_iff; tcsp.
-  }
-
   { Case "KTdifferential".
     unfold on_test in ust.
     dest_cases fv.
@@ -1982,16 +1934,6 @@ Proof.
   }
 
   { Case "KTtimes".
-    apply in_app_iff in i; apply in_app_iff; repndors;
-      [left;apply IHt1|right;apply IHt2];auto.
-  }
-
-  { Case "KTdivide".
-    apply in_app_iff in i; apply in_app_iff; repndors;
-      [left;apply IHt1|right;apply IHt2];auto.
-  }
-
-  { Case "KTpower".
     apply in_app_iff in i; apply in_app_iff; repndors;
       [left;apply IHt1|right;apply IHt2];auto.
   }
@@ -3775,11 +3717,6 @@ Proof.
       rewrite (coincidence_term _ _ v _ I); eauto 3 with core. }
   }
 
-  { Case "KFdifferentialFormula".
-    introv IH; introv.
-    dest_sub w; tcsp.
-  }
-
   { Case "KPassign".
     pose proof (dynamic_semantics_term_substitution_dot_term e t I v) as h.
     unfold on_substitution_dot_term in h.
@@ -3850,13 +3787,6 @@ Proof.
       rewrite (coincidence_term _ _ v _ I); eauto 3 with core. }
   }
 
-  { Case "KPparallel".
-    introv IH1 IH2; introv.
-    dest_sub x.
-    dest_sub y.
-    tcsp.
-  }
-
   { Case "KPloop".
     introv IH1; introv.
     dest_sub x; symmetry in Heqx.
@@ -3889,14 +3819,6 @@ Proof.
       rewrite (coincidence_term _ _ v _ I);
         eauto 3 with core.
     }
-  }
-
-  { Case "KPsend".
-    dest_sub x; tcsp.
-  }
-
-  { Case "KPbroadcast".
-    dest_sub x; tcsp.
   }
 
   { Case "KPodeSystem".
@@ -4375,11 +4297,6 @@ Proof.
       apply q1 in h0; clear q1; auto. }
   }
 
-  { Case "KFdifferentialFormula".
-    introv IH; introv.
-    dest_sub w; tcsp.
-  }
-
   { Case "KPtest".
     introv IH; introv.
     pose proof (IH g I v) as q; clear IH.
@@ -4418,13 +4335,6 @@ Proof.
       rewrite <- q1 in h1; clear q1.
       dands; auto.
       apply q2; auto. }
-  }
-
-  { Case "KPparallel".
-    introv IH1 IH2; introv.
-    dest_sub x.
-    dest_sub y.
-    tcsp.
   }
 
   { Case "KPloop".
@@ -5076,11 +4986,6 @@ Proof.
       apply subset_free_vars_vec_term; auto. }
   }
 
-  { Case "KFdifferentialFormula".
-    introv IH; introv.
-    dest_sub w; tcsp.
-  }
-
   { Case "KPassign".
     pose proof (dynamic_semantics_term_substitution_dots_term e t I v) as h.
     unfold on_substitution_dots_term in h.
@@ -5170,13 +5075,6 @@ Proof.
       apply subset_free_vars_vec_term; auto. }
   }
 
-  { Case "KPparallel".
-    introv IH1 IH2; introv.
-    dest_sub x.
-    dest_sub y.
-    tcsp.
-  }
-
   { Case "KPloop".
     introv IH1; introv.
     dest_sub x; symmetry in Heqx.
@@ -5226,14 +5124,6 @@ Proof.
       eapply eassignables_disj_subset;[|eauto]; simpl.
       apply included_dec_prop.
       apply subset_free_vars_vec_term; auto. }
-  }
-
-  { Case "KPsend".
-    dest_sub x; tcsp.
-  }
-
-  { Case "KPbroadcast".
-    dest_sub x; tcsp.
   }
 
   { Case "KPodeSystem".

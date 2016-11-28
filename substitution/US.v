@@ -544,8 +544,6 @@ Fixpoint containsDot (t : Term) : bool :=
   | KTplus   l r => containsDot l || containsDot r
   | KTminus  l r => containsDot l || containsDot r
   | KTtimes  l r => containsDot l || containsDot r
-  | KTdivide l r => containsDot l || containsDot r
-  | KTpower  l r => containsDot l || containsDot r
   | KTdifferential theta => containsDot theta
   end.
 
@@ -559,8 +557,6 @@ Fixpoint containsDotN (n : nat) (t : Term) : bool :=
   | KTplus   l r => containsDotN n l || containsDotN n r
   | KTminus  l r => containsDotN n l || containsDotN n r
   | KTtimes  l r => containsDotN n l || containsDotN n r
-  | KTdivide l r => containsDotN n l || containsDotN n r
-  | KTpower  l r => containsDotN n l || containsDotN n r
   | KTdifferential t => containsDotN n t
   end.
 
@@ -596,8 +592,6 @@ Fixpoint substitution_dot_term (t : Term) (u : Term) : option Term :=
   | KTplus   l r => (substitution_dot_term l u) >>= (fun a => (substitution_dot_term r u) >=> KTplus a)
   | KTminus  l r => (substitution_dot_term l u) >>= (fun a => (substitution_dot_term r u) >=> KTminus a)
   | KTtimes  l r => (substitution_dot_term l u) >>= (fun a => (substitution_dot_term r u) >=> KTtimes a)
-  | KTdivide l r => (substitution_dot_term l u) >>= (fun a => (substitution_dot_term r u) >=> KTdivide a)
-  | KTpower  l r => (substitution_dot_term l u) >>= (fun a => (substitution_dot_term r u) >=> KTpower a)
   | KTdifferential t =>
     on_test
       (nullb (free_vars_term_restrict_term u t))
@@ -617,8 +611,6 @@ Fixpoint substitution_dots_term (t : Term) {m} (u : Vector.t Term m) : option Te
   | KTplus   l r => (substitution_dots_term l u) >>= (fun a => (substitution_dots_term r u) >=> KTplus a)
   | KTminus  l r => (substitution_dots_term l u) >>= (fun a => (substitution_dots_term r u) >=> KTminus a)
   | KTtimes  l r => (substitution_dots_term l u) >>= (fun a => (substitution_dots_term r u) >=> KTtimes a)
-  | KTdivide l r => (substitution_dots_term l u) >>= (fun a => (substitution_dots_term r u) >=> KTdivide a)
-  | KTpower  l r => (substitution_dots_term l u) >>= (fun a => (substitution_dots_term r u) >=> KTpower a)
   | KTdifferential t =>
     on_test
       (nullb (free_vars_vec_term_restrict_term u t))
@@ -714,8 +706,6 @@ Fixpoint substitution_dot_term_in_formula (fi : Formula) (u : Term) : option For
              on_test
                (eassignables_disj (bound_vars_program a) (EA_assignables (free_vars_term u)))
                (substitution_dot_term_in_formula f u) >=> KFdiamond a)
-
-  | KFdifferentialFormula l => (substitution_dot_term_in_formula l u) >=> KFdifferentialFormula
   end
 
 (** Substitution of dot term in program --- see Section 3 *)
@@ -735,18 +725,12 @@ with substitution_dot_term_in_program (pr : Program) (v : Term) : option Program
                     (eassignables_disj (bound_vars_program a) (EA_assignables (free_vars_term v)))
                     (substitution_dot_term_in_program r v) >=> KPcompose a)
 
-       | KPparallel cl cr l r => (substitution_dot_term_in_program l v) >>= (fun a => (substitution_dot_term_in_program r v) >=>  KPparallel cl cr a)
-
        | KPloop p =>
          (substitution_dot_term_in_program p v)
            >>= (fun a =>
                   on_test
                     (eassignables_disj (bound_vars_program a) (EA_assignables (free_vars_term v)))
                     (ret (KPloop a)))
-
-       | KPsend c t  => (substitution_dot_term t v) >=> KPsend c
-       | KPreceive c var => ret (KPreceive c var)
-       | KPbroadcast c t var => (substitution_dot_term t v) >=> (fun a => KPbroadcast c a var)
 
        | KPodeSystem ode f =>
          on_test
@@ -840,8 +824,6 @@ Fixpoint substitution_dots_term_in_formula
              on_test
                (eassignables_disj (bound_vars_program a) (EA_assignables (free_vars_vec_term u)))
                (substitution_dots_term_in_formula f u) >=> KFdiamond a)
-
-  | KFdifferentialFormula l => (substitution_dots_term_in_formula l u) >=> KFdifferentialFormula
   end
 
 (** Substitution of dot term in program --- see Section 3 *)
@@ -864,18 +846,12 @@ with substitution_dots_term_in_program
                     (eassignables_disj (bound_vars_program a) (EA_assignables (free_vars_vec_term v)))
                     (substitution_dots_term_in_program r v) >=> KPcompose a)
 
-       | KPparallel cl cr l r => (substitution_dots_term_in_program l v) >>= (fun a => (substitution_dots_term_in_program r v) >=>  KPparallel cl cr a)
-
        | KPloop p =>
          (substitution_dots_term_in_program p v)
            >>= (fun a =>
                   on_test
                     (eassignables_disj (bound_vars_program a) (EA_assignables (free_vars_vec_term v)))
                     (ret (KPloop a)))
-
-       | KPsend c t  => (substitution_dots_term t v) >=> KPsend c
-       | KPreceive c var => ret (KPreceive c var)
-       | KPbroadcast c t var => (substitution_dots_term t v) >=> (fun a => KPbroadcast c a var)
 
        | KPodeSystem ode f =>
          on_test
@@ -937,8 +913,6 @@ Fixpoint substitution_dot_formula_in_formula (fi : Formula) (u : Formula) : opti
              (*on_test
                (eassignables_disj (bound_vars_program a) (free_vars_formula u))*)
                (substitution_dot_formula_in_formula f u) >=> KFdiamond a)
-
-  | KFdifferentialFormula l => (substitution_dot_formula_in_formula l u) >=> KFdifferentialFormula
   end
 
 (** Substitution of dot formula in program --- see Section 3 *)
@@ -958,18 +932,12 @@ with substitution_dot_formula_in_program (pr : Program) (v : Formula) : option P
                     (eassignables_disj (bound_vars_program a) (free_vars_formula v))*)
                     (substitution_dot_formula_in_program r v) >=> KPcompose a)
 
-       | KPparallel cl cr l r => (substitution_dot_formula_in_program l v) >>= (fun a => (substitution_dot_formula_in_program r v) >=> KPparallel cl cr a)
-
        | KPloop p =>
          (substitution_dot_formula_in_program p v)
            >>= (fun a =>
                   (*on_test
                     (eassignables_disj (bound_vars_program a) (free_vars_formula v))*)
                     (ret (KPloop a)))
-
-       | KPsend c t => ret (KPsend c t)
-       | KPreceive c var => ret (KPreceive c var)
-       | KPbroadcast c t var => ret (KPbroadcast c t var)
 
        | KPodeSystem ode f =>
          (*on_test
@@ -1159,14 +1127,6 @@ Fixpoint uniform_substitution_term
     (uniform_substitution_term l sigma)
       >>= (fun a => (uniform_substitution_term r sigma) >=> KTtimes a)
 
-  | KTdivide l r =>
-    (uniform_substitution_term l sigma)
-      >>= (fun a => (uniform_substitution_term r sigma) >=> KTdivide a)
-
-  | KTpower l r =>
-    (uniform_substitution_term l sigma)
-      >>= (fun a => (uniform_substitution_term r sigma) >=> KTpower a)
-
   | KTdifferential theta =>
     on_test
       (U_admissible_term (EA_all []) theta sigma)
@@ -1306,8 +1266,6 @@ Fixpoint uniform_substitution_formula
               on_test (U_admissible_formula (bound_vars_program p) F sigma)
                       ((uniform_substitution_formula F sigma)
                          >=> KFbox p))
-
-  | KFdifferentialFormula F => ret (KFdifferentialFormula F)
   end
 
 (** Uniform substitution rule for hybrid programs --- see Figure 1, Section 3 *)
@@ -1335,20 +1293,12 @@ with uniform_substitution_program
                   on_test (U_admissible_program (bound_vars_program p) b sigma)
                           ((uniform_substitution_program b sigma) >=> KPcompose p))
 
-       | KPparallel ch1 ch2 p1 p2 => ret (KPparallel ch1 ch2 p1 p2)
-
        | KPloop p =>
          (uniform_substitution_program p sigma)
            >>= (fun a =>
                   on_test
                     (U_admissible_program (bound_vars_program a) p sigma)
                     (ret (KPloop a)))
-
-       | KPsend ch e => ret (KPsend ch e)
-
-       | KPreceive ch vs => ret (KPreceive ch vs)
-
-       | KPbroadcast ch e vs => ret (KPbroadcast ch e vs)
 
        | KPodeSystem ode psi =>
          on_test

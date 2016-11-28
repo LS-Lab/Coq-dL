@@ -438,13 +438,6 @@ Proof.
     }
   }
 
-  { Case "KFdifferentialFormula".
-    introv IH eqs eqi.
-    apply equal_states_on_ea_assigns2ext in eqs.
-
-    tcsp.
-  }
-
   { Case "KPconstant".
 
     introv xx eqs eqi i; ginv.
@@ -570,11 +563,6 @@ Proof.
     apply EAssignables_app_assoc.
   }
 
-  { Case "KPparallel".
-    introv IH1 IH2 ss eqs eqi sem.
-    inversion sem.
-  }
-
   { Case "KPloop".
     introv IH ss eqs eqi ds.
     apply program_close_implies_all in ds; exrepnd.
@@ -599,18 +587,6 @@ Proof.
       exists w'0; dands; auto.
       eapply program_close_trans; eauto.
     }
-  }
-
-  { Case "KPsend".
-    introv ss eqs eqi ds; inversion ds.
-  }
-
-  { Case "KPreceive".
-    introv ss eqs eqi ds; inversion ds.
-  }
-
-  { Case "KPbroadcast".
-    introv ss eqs eqi ds; inversion ds.
   }
 
   { Case "KPodeSystem".

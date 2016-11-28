@@ -203,29 +203,6 @@ Proof.
     }
 
     {
-      destruct (list_eq_dec KChannel_dec Cl Cl0); subst; prove_dec.
-      destruct (list_eq_dec KChannel_dec Cr Cr0); subst; prove_dec.
-      destruct (imp1 u1) as [d1|d1]; subst; prove_dec.
-      destruct (imp2 u2) as [d2|d2]; subst; prove_dec.
-    }
-
-    {
-      destruct (KChannel_dec c c0); subst; prove_dec.
-      destruct (term_dec e e0) as [d1|d1]; subst; prove_dec.
-    }
-
-    {
-      destruct (KChannel_dec c c0); subst; prove_dec.
-      destruct (list_eq_dec KVariable_dec vars vars0) as [d|d]; subst; prove_dec.
-    }
-
-    {
-      destruct (KChannel_dec c c0); subst; prove_dec.
-      destruct (term_dec e e0) as [d1|d1]; subst; prove_dec.
-      destruct (list_eq_dec KVariable_dec vars vars0) as [d|d]; subst; prove_dec.
-    }
-
-    {
       destruct (imp1 constraint0); subst; prove_dec.
       destruct (ODE_dec ode ode0); subst; prove_dec.
     }

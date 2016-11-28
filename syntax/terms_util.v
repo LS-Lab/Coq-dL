@@ -46,7 +46,6 @@ Require Export vec_util.
 Fixpoint term_variables (f : Term) : list KVariable :=
   match f with
   | KTdot _ => []
-(*  | KTanything => []*)
   | KTfuncOf f _ args => vec_flatten (Vector.map term_variables args)
   | KTnumber r   => []
   | KTread   x   => KVar_of_KAssignable x
@@ -54,8 +53,6 @@ Fixpoint term_variables (f : Term) : list KVariable :=
   | KTplus   l r => term_variables l ++ term_variables r
   | KTminus  l r => term_variables l ++ term_variables r
   | KTtimes  l r => term_variables l ++ term_variables r
-  | KTdivide l r => term_variables l ++ term_variables r
-  | KTpower  l r => term_variables l ++ term_variables r
   | KTdifferential theta => term_variables theta
   end.
 
