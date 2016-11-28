@@ -34,6 +34,16 @@ Require Import integral.
 
 
 
+(* !!MOVE *)
+Lemma var_not_in_ode_footprint_diff :
+  forall I v ode, ~ In (KAssignVar v) (ode_footprint_diff I ode).
+Proof.
+  unfold ode_footprint_diff.
+  introv i.
+  apply in_map_iff in i; exrepnd; ginv.
+Qed.
+
+
 (**
 
   DI for KFgreaterEqual
@@ -79,9 +89,7 @@ Proof.
 
   assert (v assignx = phi 0%R assignx) as xx.
   { apply (q0 assignx); introv xx.
-    unfold ode_footprint_diff in xx; simpl in xx;
-      repndors; tcsp; [inversion xx|].
-    apply in_map_iff in xx; exrepnd; ginv. }
+    apply var_not_in_ode_footprint_diff in xx; auto. }
 
   remember (I (SymbolFunction funcg 1)) as Fg; simpl in Fg.
   remember (I (SymbolFunction funch 1)) as Fh; simpl in Fh.
@@ -287,6 +295,269 @@ Proof.
     apply Rplus_le_le_0_compat; auto.
   }
 Qed.
+
+
+(**
+
+  DI for KFgreaterEqual (version with c only)
+
+  (p(x) -> g(x)≥h(x))
+  -> [c & p(x)](g(x)'≥h(x)')
+  -> [c & p(x)]g(x)≥h(x)
+
+ *)
+Definition DI_ge_c_axiom : Formula :=
+  KFimply
+    (KFimply (Pof1 predp tvarx) (KFgreaterEqual (Fof1 funcg tvarx) (Fof1 funch tvarx)))
+    (KFimply
+       (KFbox
+          (KPodeSystem
+             (ODEconst odec)
+             (Pof1 predp tvarx))
+          (KFgreaterEqual
+             (KTdifferential (Fof1 funcg tvarx))
+             (KTdifferential (Fof1 funch tvarx)))
+       )
+       (KFbox
+          (KPodeSystem
+             (ODEconst odec)
+             (Pof1 predp tvarx))
+          (KFgreaterEqual
+             (Fof1 funcg tvarx)
+             (Fof1 funch tvarx)))).
+
+Definition DI_ge_c_rule : rule := MkRule [] DI_ge_c_axiom.
+
+Lemma DI_ge_c_sound : rule_true DI_ge_c_rule.
+Proof.
+  introv imp; simpl in *; clear imp.
+  repeat introv ; simpl.
+  introv h1 h2 q.
+  exrepnd; subst.
+  allrw fold_VR1.
+
+  assert (v assignx = phi 0%R assignx) as xx.
+  { apply (q0 assignx); introv xx.
+    apply var_not_in_ode_footprint_diff in xx; auto. }
+
+  remember (I (SymbolFunction funcg 1)) as Fg; simpl in Fg.
+  remember (I (SymbolFunction funch 1)) as Fh; simpl in Fh.
+  destruct Fg as [Fg condg].
+  destruct Fh as [Fh condh].
+  simpl in *.
+  hide_hyp HeqFh.
+  hide_hyp HeqFg.
+
+  fold assignx in *.
+  apply Rle_ge.
+
+  pose proof (q1 (mk_preal_upto r (mk_preal 0 (Rle_refl 0)) (preal_cond r))) as cz.
+  simpl in cz; repnd.
+  rewrite <- xx in cz0.
+
+  pose proof (q1 (mk_preal_upto r r (Rle_refl r))) as cr.
+  simpl in cr; repnd.
+
+  apply Rge_le in h1; auto;[].
+
+  destruct (in_dec KAssignable_dec varx (interp_ode_bv (I (SymbolODE odec)))) as [d|d];
+    [|assert (~ In assignx (ode_footprint I (ODEconst odec))) as ni;
+      [introv ix;
+       unfold ode_footprint in ix; apply in_app_iff in ix; repndors; simpl in ix; tcsp;
+       apply var_not_in_ode_footprint_diff in ix; auto
+      |];
+      pose proof (cr assignx ni) as ex;
+      rewrite <- ex; rewrite <- xx; auto
+    ];[].
+
+  assert (forall z,
+             (0 <= z)%R
+             -> (z <= r)%R
+             -> (Derive (fun t : R => Fh (VR1 (phi t assignx))) z
+                 <=
+                 Derive (fun t : R => Fg (VR1 (phi t assignx))) z)%R) as gtd.
+
+  {
+    introv le0z lezr.
+    pose proof (h2 (phi (mk_preal_upto r (mk_preal z le0z) lezr))) as zz; clear h2.
+    autodimp zz hyp; simpl in *.
+
+    {
+      exists (mk_preal z le0z) phi; simpl; dands; auto.
+
+      {
+        Opaque KAssignable_dec. (* otherwise things get unfolded too much here *)
+        introv i; simpl in *.
+        pose proof (q3 (ex_preal_upto_trans
+                          r
+                          (mk_preal_upto r (mk_preal z le0z) lezr)
+                          zeta) v0) as q; simpl in q; tcsp.
+      }
+
+      {
+        introv.
+        pose proof (q1 (ex_preal_upto_trans
+                          r
+                          (mk_preal_upto r (mk_preal z le0z) lezr)
+                          zeta)) as q; simpl in q; tcsp.
+      }
+    }
+
+    erewrite Derive_ext in zz;[|introv;autorewrite with core;rewrite fold_VR1;reflexivity].
+    apply Rge_le in zz.
+    erewrite Derive_ext in zz;[|introv;autorewrite with core;rewrite fold_VR1;reflexivity].
+
+    autorewrite with core in zz.
+
+    pose proof (differential_space_time
+                  varx I r phi z
+                  (Fof1 funcg tvarx)) as e1.
+    repeat (autodimp e1 hyp); eauto with core;
+      try (complete (destruct r; simpl; auto));
+      try (complete (apply Rle_refl)).
+
+    {
+      introv; simpl.
+      pose proof (q3 zeta varx) as h; simpl in h.
+      autodimp h hyp; tcsp.
+    }
+
+    simpl in e1.
+    autorewrite with core in e1.
+    rewrite <- HeqFg in e1; simpl in *.
+    erewrite Derive_ext in e1;[|introv;autorewrite with core;rewrite fold_VR1;reflexivity].
+    fold assignx in *.
+    rewrite e1 in zz; clear e1.
+
+    pose proof (differential_space_time
+                  varx I r phi z
+                  (Fof1 funch tvarx)) as e2.
+    repeat (autodimp e2 hyp); eauto with core; simpl in *;
+      try (complete (destruct r; simpl; auto));
+      try (complete (apply Rle_refl)).
+
+    {
+      introv; simpl.
+      pose proof (q3 zeta varx) as h.
+      simpl in h; autodimp h hyp; tcsp.
+    }
+
+    simpl in e2.
+    autorewrite with core in e2.
+    rewrite <- HeqFh in e2; simpl in *.
+    erewrite Derive_ext in e2;[|introv;autorewrite with core;rewrite fold_VR1;reflexivity].
+    fold assignx in *.
+    rewrite e2 in zz; clear e2.
+
+    erewrite Derive_ext in zz;[|introv;autorewrite with core;rewrite fold_VR1;reflexivity].
+    apply Rle_ge in zz.
+    erewrite Derive_ext in zz;[|introv;autorewrite with core;rewrite fold_VR1;reflexivity].
+    apply Rge_le in zz.
+    auto.
+  }
+  clear h2.
+
+  apply Rminus_le_0 in h1.
+  apply Rminus_le_0.
+
+  assert (forall z : R,
+             (0 <= z)%R ->
+             (z <= r)%R ->
+             (0 <=
+              Derive (fun t : R => Fg (VR1 (phi t assignx))) z * r
+              - Derive (fun t : R => Fh (VR1 (phi t assignx))) z * r)%R) as gtd'.
+  { introv le0z lezr.
+    rewrite <- Rmult_minus_distr_r.
+    apply Rmult_le_pos; auto.
+    rewrite <- Rminus_le_0.
+    apply gtd; auto. }
+  clear gtd.
+
+  pose proof (MVT_gen
+                (fun r => (Fg (VR1 (phi r assignx)) - Fh (VR1 (phi r assignx)))%R)
+                0 r
+                (fun r =>
+                   (Derive (fun t : R => Fg (VR1 (phi t assignx))) r
+                    - Derive (fun t : R => Fh (VR1 (phi t assignx))) r)%R)) as mvt.
+  rewrite Rmin_left in mvt; auto.
+  rewrite Rmax_right in mvt; auto.
+  simpl in mvt.
+  repeat (autodimp mvt hyp).
+
+  {
+    introv ltx.
+    destruct ltx as [lt0x ltxr].
+    apply @is_derive_minus; apply Derive_correct.
+
+    {
+      apply (ex_derive_comp
+               (fun t => Fg (VR1 t))
+               (fun t => phi t assignx)
+               x); simpl in *; eauto 2 with core.
+      apply Rlt_le in lt0x.
+      apply Rlt_le in ltxr.
+      pose proof (q3 (mk_preal_upto r (mk_preal x lt0x) ltxr) varx) as q; simpl in q.
+      autodimp q hyp; tcsp.
+    }
+
+    {
+      apply (ex_derive_comp
+               (fun t => Fh (VR1 t))
+               (fun t => phi t assignx)
+               x); simpl in *; eauto 2 with core.
+      apply Rlt_le in lt0x.
+      apply Rlt_le in ltxr.
+      pose proof (q3 (mk_preal_upto r (mk_preal x lt0x) ltxr) varx) as q; simpl in q.
+      autodimp q hyp; tcsp.
+    }
+  }
+
+  {
+    introv lex.
+    destruct lex as [le0x lexr].
+
+    unfold continuity_pt.
+    apply (cont_deriv
+             _
+             (fun r =>
+                (Derive (fun t : R => Fg (VR1 (phi t assignx))) r
+                 - Derive (fun t : R => Fh (VR1 (phi t assignx))) r)%R)).
+    apply derivable_pt_lim_D_in.
+    apply is_derive_Reals.
+    apply @is_derive_minus; apply Derive_correct.
+
+    {
+      apply (ex_derive_comp
+               (fun t => Fg (VR1 t))
+               (fun t => phi t assignx)
+               x); simpl in *; eauto 2 with core.
+      pose proof (q3 (mk_preal_upto r (mk_preal x le0x) lexr) varx) as q; simpl in q.
+      autodimp q hyp; tcsp.
+    }
+
+    {
+      apply (ex_derive_comp
+               (fun t => Fh (VR1 t))
+               (fun t => phi t assignx)
+               x); simpl in *; eauto 2 with core.
+      pose proof (q3 (mk_preal_upto r (mk_preal x le0x) lexr) varx) as q; simpl in q.
+      autodimp q hyp; tcsp.
+    }
+  }
+
+  {
+    exrepnd.
+    autorewrite with core in mvt0.
+    repeat (rewrite <- xx in mvt0).
+    apply subtract_both_side_equ in mvt0.
+    rewrite mvt0; clear mvt0.
+
+    pose proof (gtd' c) as q; clear gtd'; repeat (autodimp q hyp).
+    rewrite Rmult_minus_distr_r.
+    apply Rplus_le_le_0_compat; auto.
+  }
+Qed.
+
 
 
 (**
