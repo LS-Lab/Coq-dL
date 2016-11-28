@@ -116,7 +116,7 @@ Roadmap
 
 This repository is organized into the following folders:
 
-1. coq-tools: a submodule containing some useful tactic
+1. coq-tools: a submodule containing some useful tactics
 2. syntax: syntax of Terms, Formulas, Hybrid Programs and ODEs
 3. semantics: static semantic, dynamic semantics as well as
      soundness of static semantics (coincidence lemmas)
@@ -124,5 +124,5 @@ This repository is organized into the following folders:
      correctness, as well as uniform and bound
      variable renaming
 5. axioms: DDL and ODE axioms
-6. checker: sequent calculi and proof checker
+6. checker: sequent calculus and proof checker
 6. examples: examples of proofs that use our proof checker
