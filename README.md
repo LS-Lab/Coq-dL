@@ -21,9 +21,9 @@ The technical report about uniform substitution is available
 Contributors
 ------------
 
-* Vincent Rahli
-* Marcus Völp
-* Ivana Vukotic
+* [Vincent Rahli](http://wwwen.uni.lu/snt/people/vincent_rahli)
+* [Marcus Völp](http://wwwen.uni.lu/snt/people/marcus_voelp)
+* [Ivana Vukotic](http://wwwen.uni.lu/snt/people/ivana_vukotic)
 
 If you have any question, please send an email to either of us
 (preferably Vincent).  You can find our email addresses on the [CritiX
