@@ -107,7 +107,7 @@ file and hit C-c C-RET.  Assuming that you set the
 file and all its dependencies.
 
 * If you want to try to prove something yourself, look for example
-at checker/example1.v.
+at examples/example1.v.
 
 
 Roadmap
