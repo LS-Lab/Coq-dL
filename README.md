@@ -18,6 +18,21 @@ The technical report about uniform substitution is available
 [here](http://arxiv.org/pdf/1601.06183.pdf).
 
 
+Contributors
+------------
+
+* Vincent Rahli
+* Marcus Völp
+* Ivana Vukotic
+
+If you have any question, please send an email to either of us
+(preferably Vincent).  You can find our email addresses on the [CritiX
+webpage](http://wwwen.uni.lu/snt/research/critix/).
+
+This work is supported by the SnT and the National Research Fund
+Luxembourg (FNR), through PEARL grant FNR/P14/8149128.
+
+
 Install and Dependencies
 ------------------------
 
@@ -111,11 +126,3 @@ This repository is organized into the following folders:
 5. axioms: DDL and ODE axioms.
 6. checker: sequent calculi and proof checker as well as examples of
      proofs that use our proof checker.
-
-
-Contributors
-------------
-
-* Vincent Rahli
-* Marcus Völp
-* Ivana Vukotic
