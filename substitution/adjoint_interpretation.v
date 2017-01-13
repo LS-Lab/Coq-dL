@@ -294,7 +294,6 @@ Proof.
   eapply ex_partial_derive_ext;
     [introv;symmetry;apply partial_derive_st_minus;
      introv len;[apply F1|apply G1] |].
-  Locate ex_partial_derive_st_l_pt_plus.
   apply ex_partial_derive_st_l_pt_minus; introv ss;
     [apply F2|apply G2]; auto; introv i ss';
       apply cond; auto; eapply sublist_trans; eauto.
