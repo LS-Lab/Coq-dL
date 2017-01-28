@@ -28,12 +28,12 @@
  *)
 
 
-Require Export Reals.
 Require Export tactics2.
-Require Export Rcomplements.
+(*Require Export Reals.*)
+(*Require Export Rcomplements.*)
 
-(*Require Export CoRN.reals.CReals.*)
-
+Require Export CoRN.reals.fast.CRIR.
+Require Export CoRN.reals.Intervals.
 
 (**
 
@@ -42,8 +42,11 @@ Require Export Rcomplements.
 *)
 
 
-Hint Rewrite Rminus_0_r.
-Hint Rewrite Ropp_0.
+Hint Rewrite cg_minus_correct : core.
+Hint Rewrite cg_inv_zero      : core. (* Hint Rewrite Rminus_0_r. *)
+Hint Rewrite cg_inv_zero      : core. (* Hint Rewrite minus0 : core. *)
+
+(*Hint Rewrite Ropp_0.
 Hint Rewrite Rabs_R0.
 Hint Rewrite Rmult_1_l : core.
 Hint Rewrite Rmult_1_r : core.
@@ -52,7 +55,6 @@ Hint Rewrite Rmult_0_r : core.
 Hint Rewrite Rplus_0_l : core.
 Hint Rewrite Rplus_0_r : core.
 Hint Rewrite Nat.sub_diag : core.
-Hint Rewrite minus0 : core.
 Hint Rewrite pow_O : core.
 Hint Rewrite Nat.mul_1_r : core.
 Hint Rewrite Nat.add_0_r : core.
@@ -61,70 +63,77 @@ Hint Rewrite Rplus_opp_l : core.
 Hint Rewrite Rminus_0_l : core.
 Hint Rewrite pow1 : core.
 Hint Rewrite Ropp_involutive : core.
-Hint Rewrite Rcomplements.Rdiv_1 : core.
-
-
+Hint Rewrite Rcomplements.Rdiv_1 : core.*)
 
 (** Dummy real number *)
-Definition DumR : R := 0.
+Definition DumR : IR := [0].
 
-
-(** for non zero elements, division by zero returns zero *)
+(** division of zero returns zero *)
 Lemma zero_div_is_zero :
-  forall (r : R), r <> R0 -> (0 / r)%R = R0.
+  forall (r : IR) x_,
+    ([0] [/] r [//] x_) [=] [0].
 Proof.
-  intros r d.
-  rewrite (Fdiv_def Rfield).
-  rewrite Rmult_0_l; auto.
+  apply div_prop.
 Qed.
+Hint Rewrite zero_div_is_zero : core.
 
+Hint Resolve eq_reflexive_unfolded : core.
 
 (** plus and minus are comutative *)
 Lemma Rplus_minus_comm :
-  forall r1 r2 r3 : R,
-    (r1 + r2 - r3)%R = (r2 + (r1 - r3))%R.
+  forall (r1 r2 r3 : IR),
+    r1 [+] r2 [-] r3 [=] r2 [+] (r1 [-] r3).
 Proof.
-  intros r1 r2 r3.
-  repeat rewrite (Rsub_def (F_R Rfield)).
-  rewrite (Radd_comm (F_R Rfield) r1 r2).
-  rewrite <- (Radd_assoc (F_R Rfield) r2 r1).
-  auto.
+  introv.
+  rewrite assoc_2; auto.
+  rewrite cag_commutes; eauto.
 Qed.
 
 (** subtraction of two same numbers equals zero *)
 Lemma Rminus_same :
-  forall r, (r - r)%R = R0.
+  forall (r : IR), r [-] r [=] [0].
 Proof.
-  intros r.
-  rewrite (Rsub_def (F_R Rfield) r).
-  rewrite (Ropp_def (F_R Rfield)); auto.
+  introv.
+  autorewrite with core; auto.
 Qed.
-Hint Rewrite Rminus_same.
+Hint Rewrite Rminus_same : core.
+
+Record posreal :=
+  mkposreal
+    {
+      posreal_r : IR;
+      posreal_cond : [0] [<] posreal_r
+    }.
+
+Lemma zero_lt_one : ([0] : IR) [<] [1].
+Proof.
+  apply pos_one.
+Qed.
 
 (** R1 as posreal *)
-Definition R1pos : posreal := mkposreal R1 Rlt_0_1.
+Definition R1pos : posreal := mkposreal [1] zero_lt_one.
 
 (* this definition is used in definition of dynamic semantics of programs *)
 (** returns all reals which are greater or equal than zero *)
-Record preal : Set :=
+Record preal :=
   mk_preal
     {
-      preal_r :> R;
-      preal_cond : (0 <= preal_r)%R
+      preal_r :> IR;
+      preal_cond : [0] [<=] preal_r
     }.
 Hint Resolve preal_cond : core.
 
 (* this definition is used in definition of dynamic semantics of programs *)
 (** returns all reals which are greater or equal than zero, but less or equal than r  *)
-Record preal_upto (r : R) : Set :=
+Record preal_upto (r : IR) :=
   mk_preal_upto
     {
       preal_upto_preal :> preal;
-      preal_upto_cond : (preal_upto_preal <= r)%R
+      preal_upto_cond : preal_upto_preal [<=] r
     }.
 
 Lemma preal_upto_are_pos :
-  forall r (z : preal_upto r), (0 <= z)%R.
+  forall r (z : preal_upto r), [0] [<=] z.
 Proof.
   introv.
   destruct z as [x z]; simpl.
@@ -132,20 +141,20 @@ Proof.
 Qed.
 
 Lemma lt_preal_upto_trans :
-  forall (r : R)
+  forall (r : IR)
          (r1 : preal_upto r)
          (r2 : preal_upto r1),
-    (preal_upto_preal r1 r2 <= r)%R.
+    preal_upto_preal r1 r2 [<=] r.
 Proof.
   introv.
   destruct r1 as [rr1 cr1].
   destruct r2 as [rr2 cr2].
   simpl in *.
-  eapply Rle_trans; eauto.
+  eapply leEq_transitive; eauto.
 Qed.
 
 Definition ex_preal_upto_trans
-           (r : R)
+           (r : IR)
            (r1 : preal_upto r)
            (r2 : preal_upto r1) : preal_upto r :=
   mk_preal_upto
@@ -154,9 +163,13 @@ Definition ex_preal_upto_trans
     (lt_preal_upto_trans r r1 r2).
 
 Lemma Rmult_lt_pos :
-  forall r1 r2 : R, (0 < r1)%R -> (0 < r2)%R -> (0 < r1 * r2)%R.
+  forall r1 r2 : IR, [0] [<] r1 -> [0] [<] r2 -> [0] [<] r1 [*] r2.
 Proof.
   introv lt0r1 lt0r2.
+  SearchAbout (_ [<] ( _ [*] _)).
+
+XXXXXXXXX
+
   pose proof (Rmult_le_0_lt_compat 0 r1 0 r2) as q.
   autorewrite with core in q; apply q; auto; try apply Rle_refl.
 Qed.

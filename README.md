@@ -68,7 +68,12 @@ seem to have a git repository).  Just untar it to start using it.  It
 requires ssreflect (we're using version 1.6).  The best way to get
 ssreflect is through opam by running:
 
-    `opam install coq-mathcomp-ssreflect.1.6`.
+    `opam install coq-mathcomp-ssreflect.1.6`
+
+* This branch also uses [CoRN](http://corn.cs.ru.nl/).  To install
+CoRN through opam, run:
+
+    `opam install coq-corn`
 
 * If you've cloned this repository, you'll need to pull the submodules
 by running:
