@@ -47,10 +47,10 @@ Ltac spFalseHyp :=
        | [ H : ?x <> ?x |- _ ] => provefalse; apply H; auto
        | [ H : notT(?x = ?x) |- _ ] => provefalse; apply H; auto
        | [ H : context[?x = ?x] |- _ ] => trw_h true_eq_same H
-       | [ H : context[?t [+] False] |- _ ] => trw_h or_false_r H
-       | [ H : context[False [+] ?t] |- _ ] => trw_h or_false_l H
-       | [ H : context[?t [+] True] |- _ ] => trw_h or_true_r H
-       | [ H : context[True [+] ?t] |- _ ] => trw_h or_true_l H
+       | [ H : context[?t [[+]] False] |- _ ] => trw_h or_false_r H
+       | [ H : context[False [[+]] ?t] |- _ ] => trw_h or_false_l H
+       | [ H : context[?t [[+]] True] |- _ ] => trw_h or_true_r H
+       | [ H : context[True [[+]] ?t] |- _ ] => trw_h or_true_l H
        | [ H : context[notT False] |- _ ] => trw_h not_false_is_true H
      end; try subst).
 

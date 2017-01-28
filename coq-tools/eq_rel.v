@@ -70,7 +70,7 @@ Ltac dprods := repeat dprod.
 
 Ltac dsum :=
   match goal with
-      [ H : ?x [+] ?y |- _ ] => destruct H
+      [ H : ?x [[+]] ?y |- _ ] => destruct H
   end.
 
 Ltac dsums := repeat dsums.
@@ -79,7 +79,7 @@ Ltac dall :=
   repeat match goal with
            | [ H : ?x <o> ?y |- _ ] => destruct H
            | [ H : ?x ## ?y   |- _ ] => destruct H
-           | [ H : ?x [+] ?y |- _ ] => destruct H
+           | [ H : ?x [[+]] ?y |- _ ] => destruct H
          end.
 
 Definition tiff_fst :=
@@ -133,7 +133,7 @@ Lemma combine_t_iff_proofs_sum :
   forall {A B A' B'},
     (A <o> A')
     -> (B <o> B')
-    -> ((A [+] B) <o> (A' [+] B')).
+    -> ((A [[+]] B) <o> (A' [[+]] B')).
 Proof.
   intros.
   dall; constructor; intro; dall; auto.
@@ -178,7 +178,7 @@ Ltac build_tiff_term T a b p :=
       let l := build_tiff_term x a b p in
       let r := build_tiff_term y a b p in
       constr:(combine_t_iff_proofs_prod l r)
-    | ?x [+] ?y =>
+    | ?x [[+]] ?y =>
       let l := build_tiff_term x a b p in
       let r := build_tiff_term y a b p in
       constr:(combine_t_iff_proofs_sum l r)
@@ -300,7 +300,7 @@ Ltac get_instance_of  T  H Hn :=
 
     | ?Hl <o> ?Hr => get_instance_of T Hl Hn || get_instance_of T Hr Hn
     | ?Hl ## ?Hr => get_instance_of T Hl Hn || get_instance_of T Hr Hn
-    | ?Hl [+] ?Hr => get_instance_of T Hl Hn || get_instance_of T Hr Hn
+    | ?Hl [[+]] ?Hr => get_instance_of T Hl Hn || get_instance_of T Hr Hn
     | notT ?Hl => get_instance_of T Hl Hn
     | ?Hl -> ?Hr => get_instance_of T Hl Hn || get_instance_of T Hr Hn
   end.
@@ -334,7 +334,7 @@ Ltac get_instance_of_rev  T  H Hn :=
 
     | ?Hl <o> ?Hr => get_instance_of_rev T Hl Hn || get_instance_of_rev T Hr Hn
     | ?Hl ## ?Hr => get_instance_of_rev T Hl Hn || get_instance_of_rev T Hr Hn
-    | ?Hl [+] ?Hr => get_instance_of_rev T Hl Hn || get_instance_of_rev T Hr Hn
+    | ?Hl [[+]] ?Hr => get_instance_of_rev T Hl Hn || get_instance_of_rev T Hr Hn
     | notT ?Hl => get_instance_of_rev T Hl Hn
     | ?Hl -> ?Hr => get_instance_of_rev T Hl Hn || get_instance_of_rev T Hr Hn
   end.

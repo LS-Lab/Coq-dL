@@ -32,6 +32,9 @@ Require Export Reals.
 Require Export tactics2.
 Require Export Rcomplements.
 
+(*Require Export CoRN.reals.CReals.*)
+
+
 (**
 
   Some useful lemmas about reals which we used in our proofs.

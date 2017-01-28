@@ -37,7 +37,7 @@ Notation "T [+] U" := (T + U)%type (at level 50, left associativity) : NupCoqSco
 
 (*Notation "! x" := (notT x)%type (at level 75, right associativity).*)
 Notation "T ## U" := (T * U)%type (at level 80, right associativity).
-Notation "T [+] U" := (T + U)%type (at level 80, right associativity).
+Notation "T [[+]] U" := (T + U)%type (at level 80, right associativity).
 
 Notation "{ a : T $ P }" := {a : T & P} (at level 0, a at level 99).
 

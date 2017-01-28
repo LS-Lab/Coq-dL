@@ -206,10 +206,10 @@ Ltac sp_step :=
     | [ H : exists (v : _),_  |- _ ] => let name := fresh v in destruct H as [name]
     | [ H1 : ?P -> ?Q, H2 : ?P |- _ ] => specialize (H1 H2)
     | [ H1 : ~ ?P, H2 : ?P |- _ ] => specialize (H1 H2)
-    | [ H1 : (?P [+] ?R) -> ?Q, H2 : ?P |- _ ] => specialize (H1 (inl H2))
-    | [ H1 : (?R [+] ?P) -> ?Q, H2 : ?P |- _ ] => specialize (H1 (inr H2))
-    | [ H : ((?P = ?P) [+] _) -> ?Q |- _ ] => specialize (H (inl eq_refl))
-    | [ H : (_ [+] (?P = ?P)) -> ?Q |- _ ] => specialize (H (inr eq_refl))
+    | [ H1 : (?P [[+]] ?R) -> ?Q, H2 : ?P |- _ ] => specialize (H1 (inl H2))
+    | [ H1 : (?R [[+]] ?P) -> ?Q, H2 : ?P |- _ ] => specialize (H1 (inr H2))
+    | [ H : ((?P = ?P) [[+]] _) -> ?Q |- _ ] => specialize (H (inl eq_refl))
+    | [ H : (_ [[+]] (?P = ?P)) -> ?Q |- _ ] => specialize (H (inr eq_refl))
     | [ H : { v : _ | _ } |- _ ] => let name := fresh v in destruct H as [name]
     | [ H : { v : _ & _ } |- _ ] =>  let name := fresh v in destruct H as [name]
     | [ H : { v : _ | _ & _ } |- _ ] => let name := fresh v in destruct H as [name]
@@ -330,7 +330,7 @@ Proof.
   sp.
 Qed.
 
-Lemma sum_sym : forall a b, a [+] b -> b [+] a.
+Lemma sum_sym : forall a b, a [[+]] b -> b [[+]] a.
 Proof.
   sp.
 Qed.
@@ -340,7 +340,7 @@ Ltac symm :=
     | [ |- ?a <-> ?b ] => rewrite iff_symm
     | [ |- ?a <o> ?b ] => apply t_iff_sym
     | [ |- ?a ## ?b ] => apply prod_sym
-    | [ |- ?a [+] ?b ] => apply sum_sym
+    | [ |- ?a [[+]] ?b ] => apply sum_sym
   end.
 
 Tactic Notation "inv_sub_clear" ident (h) :=
@@ -675,7 +675,7 @@ Ltac clear_all :=
 
 Ltac clear_ors :=
   repeat match goal with
-           | [ H : _ [+] _ |- _ ] => clear H
+           | [ H : _ [[+]] _ |- _ ] => clear H
          end.
 
 Ltac gen_some x :=

@@ -297,7 +297,7 @@ Qed.
 
 Lemma not_over_or :
   forall a b,
-    notT(a [+] b) <o> notT a ## notT b.
+    notT(a [[+]] b) <o> notT a ## notT b.
 Proof.
   sp; split; sp.
 Qed.
@@ -325,7 +325,7 @@ Qed.
 
 Lemma sum_assoc :
   forall a b c,
-    (a [+] (b [+] c)) <o> ((a [+] b) [+] c).
+    (a [[+]] (b [[+]] c)) <o> ((a [[+]] b) [[+]] c).
 Proof.
   sp; split; sp.
 Qed.
@@ -588,17 +588,17 @@ Proof.
 Qed.
 
 Lemma or_true_l :
-  forall t, True [+] t <o> True.
+  forall t, True [[+]] t <o> True.
 Proof. sp. Qed.
 
 Lemma or_true_r :
-  forall t, t [+] True <o> True.
+  forall t, t [[+]] True <o> True.
 Proof. sp. Qed.
 
-Lemma or_false_r : forall t, t [+] False <o> t.
+Lemma or_false_r : forall t, t [[+]] False <o> t.
 Proof. sp; split; sp. Qed.
 
-Lemma or_false_l : forall t, False [+] t <o> t.
+Lemma or_false_l : forall t, False [[+]] t <o> t.
 Proof. sp; split; sp. Qed.
 
 Lemma and_true_l :
@@ -631,7 +631,7 @@ Ltac dforall_lt_hyp name :=
 
 Lemma not_over_and :
   forall a b,
-    decidable a -> (notT(a ## b) <o> notT a [+] notT b).
+    decidable a -> (notT(a ## b) <o> notT a [[+]] notT b).
 Proof.
   introv d; split; intro k; tcsp.
   dorn d.

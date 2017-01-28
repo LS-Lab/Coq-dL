@@ -332,7 +332,7 @@ Hint Rewrite @removelast_snoc : core.
 
 Lemma snoc_cases :
   forall {T} (l : list T),
-    l = [] [+] {a : T $ {k : list T $ l = snoc k a}}.
+    l = [] [[+]] {a : T $ {k : list T $ l = snoc k a}}.
 Proof.
   induction l; tcsp.
   repndors; exrepnd; subst; tcsp; right.
