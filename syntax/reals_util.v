@@ -101,7 +101,7 @@ Hint Rewrite Rminus_same : core.
 Record posreal :=
   mkposreal
     {
-      posreal_r : IR;
+      posreal_r :> IR;
       posreal_cond : [0] [<] posreal_r
     }.
 
@@ -166,27 +166,31 @@ Lemma Rmult_lt_pos :
   forall r1 r2 : IR, [0] [<] r1 -> [0] [<] r2 -> [0] [<] r1 [*] r2.
 Proof.
   introv lt0r1 lt0r2.
-  SearchAbout (_ [<] ( _ [*] _)).
+  apply mult_resp_pos; auto.
+Qed.
 
-XXXXXXXXX
-
-  pose proof (Rmult_le_0_lt_compat 0 r1 0 r2) as q.
-  autorewrite with core in q; apply q; auto; try apply Rle_refl.
+Lemma Rplus_lt_pos :
+  forall r1 r2 : IR, [0] [<] r1 -> [0] [<] r2 -> [0] [<] r1 [+] r2.
+Proof.
+  introv lt0r1 lt0r2.
+  apply plus_resp_pos; auto.
 Qed.
 
 Definition posreal_plus (p1 p2 : posreal) : posreal :=
   match p1, p2 with
   | mkposreal r1 c1, mkposreal r2 c2 =>
-    mkposreal (r1 + r2) (Rplus_lt_0_compat r1 r2 c1 c2)
+    mkposreal (r1 [+] r2) (Rplus_lt_pos r1 r2 c1 c2)
   end.
 
 Definition posreal_half (p : posreal) : posreal :=
-  mkposreal (p / 2) (Rcomplements.is_pos_div_2 p).
+  mkposreal (p [/]TwoNZ) (pos_div_two IR p (posreal_cond p)).
 
 Lemma posreal_eq_two_halves :
-  forall p : posreal, pos p = (p / 2) + (p / 2).
+  forall (p : posreal), p [=] (p [/]TwoNZ) [+] (p [/]TwoNZ).
 Proof.
-  introv;apply double_var.
+  introv.
+  SearchAbout (_ [/]TwoNZ).
+  ;apply double_var.
 Qed.
 
 Definition posreal_min (p1 p2 : posreal) : posreal :=
