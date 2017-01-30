@@ -34,6 +34,8 @@ Require Export tactics2.
 
 Require Export CoRN.reals.fast.CRIR.
 Require Export CoRN.reals.Intervals.
+Require Export MathClasses.interfaces.canonical_names.
+
 
 (**
 
@@ -42,9 +44,16 @@ Require Export CoRN.reals.Intervals.
 *)
 
 
-Hint Rewrite cg_minus_correct : core.
-Hint Rewrite cg_inv_zero      : core. (* Hint Rewrite Rminus_0_r. *)
-Hint Rewrite cg_inv_zero      : core. (* Hint Rewrite minus0 : core. *)
+Hint Rewrite cg_minus_correct     : core.
+Hint Rewrite cg_inv_zero          : core. (* Hint Rewrite Rminus_0_r. *)
+Hint Rewrite cg_inv_zero          : core. (* Hint Rewrite minus0 : core. *)
+Hint Rewrite cg_inv_zero          : core.
+Hint Rewrite div_1                : core.
+Hint Rewrite cring_mult_zero      : core.
+Hint Rewrite mult_one             : core.
+Hint Rewrite one_mult             : core.
+Hint Rewrite cm_rht_unit_unfolded : core.
+Hint Rewrite cm_lft_unit_unfolded : core.
 
 (*Hint Rewrite Ropp_0.
 Hint Rewrite Rabs_R0.
@@ -185,12 +194,25 @@ Definition posreal_plus (p1 p2 : posreal) : posreal :=
 Definition posreal_half (p : posreal) : posreal :=
   mkposreal (p [/]TwoNZ) (pos_div_two IR p (posreal_cond p)).
 
+Instance Zero_instance_IR : Zero IR := [0].
+Instance One_instance_IR  : One IR  := [1].
+Instance Plus_instance_IR : Plus IR := csg_op.
+Instance Mult_instance_IR : Mult IR := cr_mult.
+
 Lemma posreal_eq_two_halves :
   forall (p : posreal), p [=] (p [/]TwoNZ) [+] (p [/]TwoNZ).
 Proof.
   introv.
-  SearchAbout (_ [/]TwoNZ).
-  ;apply double_var.
+
+  apply (mult_cancel_rht _ _ _ Two); auto.
+
+  { apply pos_ap_zero; auto.
+    apply pos_two. }
+
+  rewrite ring_distl_unfolded.
+  autorewrite with core.
+  simpl.
+  repeat (rewrite ring_dist_unfolded); autorewrite with core; auto.
 Qed.
 
 Definition posreal_min (p1 p2 : posreal) : posreal :=
