@@ -198,6 +198,7 @@ Instance Zero_instance_IR : Zero IR := [0].
 Instance One_instance_IR  : One IR  := [1].
 Instance Plus_instance_IR : Plus IR := csg_op.
 Instance Mult_instance_IR : Mult IR := cr_mult.
+Instance Le_instance_IR   : Le IR   := (@cof_leEq IR).
 
 Lemma posreal_eq_two_halves :
   forall (p : posreal), p [=] (p [/]TwoNZ) [+] (p [/]TwoNZ).
@@ -216,35 +217,35 @@ Proof.
 Qed.
 
 Definition posreal_min (p1 p2 : posreal) : posreal :=
-  mkposreal (Rmin p1 p2) (Rmin_stable_in_posreal p1 p2).
-
-
+  mkposreal (Min p1 p2) (less_Min p1 p2 [0] (posreal_cond p1) (posreal_cond p2)).
 
 (** definition of zero for preal type *)
-Definition R0preal : preal := mk_preal R0 (Rle_refl 0).
+Definition R0preal : preal := mk_preal [0] (leEq_reflexive _ 0).
+
+Lemma zero_leEq_one : ([0] : IR) [<=] [1].
+Proof.
+  apply less_leEq.
+  assert ([1] [=] ([0]:IR) [+] [1]) as xx by (autorewrite with core; auto).
+  eapply less_wdr;[|symmetry; exact xx].
+  apply zero_lt_posplus1.
+  apply leEq_reflexive.
+Qed.
+
 (** definition of one for preal type *)
-Definition R1preal : preal := mk_preal R1 Rle_0_1.
+Definition R1preal : preal := mk_preal 1 zero_leEq_one.
 
 (* Used in definition of interpretation of primed terms *)
-Fixpoint big_sum {T} (vars : list T) (f : T -> R) : R :=
+Fixpoint big_sum {T} (vars : list T) (f : T -> IR) : IR :=
   match vars with
-  | [] => R0
-  | h :: t => Rplus (f h) (big_sum t f)
+  | [] => [0]
+  | h :: t => f h [+] big_sum t f
   end.
 
 Lemma R_move_sub1 :
-  forall (a b c d : R),
-    (a - b <= c - d)%R -> (a <= c - (d - b))%R.
+  forall (a b c d : IR),
+    a [-] b [<=] c [-] d -> a [<=] c [-] (d [-] b).
 Proof.
   introv h.
-  apply (Rplus_le_compat_r b) in h.
-  repeat rewrite (Rsub_def (F_R Rfield)) in h.
-  rewrite <- (Radd_assoc (F_R Rfield)) in h.
-  autorewrite with core in *.
-  rewrite <- (Radd_assoc (F_R Rfield)) in h.
-
-  rewrite (Rsub_def (F_R Rfield) c (d - b)%R).
-  rewrite Ropp_minus_distr'.
-  rewrite (Rsub_def (F_R Rfield)).
-  rewrite (Radd_comm (F_R Rfield) b); auto.
+  rewrite assoc_1.
+  apply shift_leEq_plus; auto.
 Qed.
