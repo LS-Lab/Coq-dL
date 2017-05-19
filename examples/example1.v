@@ -31,6 +31,20 @@
 Require Export checker.
 
 
+Notation "a ⋀ b" := (KFand a b) (at level 3).
+Notation "a → b" := (KFimply a b) (at level 10).
+Notation "a ≥ b" := (KFgreaterEqual a b) (at level 2).
+Notation "a ' ⚌ b" := (ODEsing a b) (at level 1).
+Notation "a ⨟ b" := (ODEprod a b) (at level 9).
+Notation "⦃ a ⦄ b" := (KPodeSystem a b) (at level 20).
+Notation "⏉" := (KFtrue) (at level 0).
+Notation "⟦ a ⟧ b" := (KFbox a b) (at level 25).
+Notation "ⓥ" := (termv) (at level 0).
+Notation "⓪" := (term0) (at level 0).
+Notation "Ⓐ" := (termA) (at level 0).
+Notation "ⓧ" := (varx) (at level 0).
+Notation "ⓥ" := (varv) (at level 0).
+
 
 (* v≥0∧A≥0 → [x'=v,v'=A&true] v≥0 *)
 
@@ -159,8 +173,7 @@ Proof.
              step_assumption "y"
            ]
         ).
-  simpl.
-  eauto with core.
+  simpl; eauto with core.
 Qed.
 
 
