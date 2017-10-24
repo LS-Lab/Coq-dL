@@ -8,13 +8,26 @@ static semantics of Differential dynamic logic (dL), as well as a
 formalization of Uniform Substitution.  We have implemented (and
 verified the validity of) dL's Differential Dynamic Logic and ODE
 axioms.  We have also implemented a proof checker to write and check
-dL proofs in Coq.
+dL proofs in Coq.  Here are some useful links regarding this
+formalization:
 
+* We described our formalization in the following paper:
+  [Formally verified differential dynamic logic](http://dx.doi.org/10.1145/3018610.3018616),
+  [Brandon Bohrer](http://www.cs.cmu.edu/~bbohrer),
+  [Vincent Rahli](http://wwwen.uni.lu/snt/people/vincent_rahli),
+  [Ivana Vukotic](http://wwwen.uni.lu/snt/people/ivana_vukotic),
+  [Marcus Völp](http://wwwen.uni.lu/snt/people/marcus_voelp)
+  and [André Platzer](http://symbolaris.com),
+  [CPP 2017](http://cpp2017.mpi-sws.org).
 
-KeYmaeraX sourcecode is available
+* The above paper covers both our Coq formalization and
+  [Brandon](http://www.cs.cmu.edu/~bbohrer)'s
+  [Isabelle/HOL formalization](https://github.com/LS-Lab/Isabelle-dL).
+
+* KeYmaeraX sourcecode is available
 [here](https://github.com/LS-Lab/KeYmaeraX-release).
 
-The technical report about uniform substitution is available
+* The technical report about uniform substitution is available
 [here](http://arxiv.org/pdf/1601.06183.pdf).
 
 
