@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if [ -e "coquelicot-2.1.1" ]
+if [ -e "coquelicot-3.0.1" ]
 then
-    echo "coquelicot-2.1.1 already exists"
+    echo "coquelicot-3.0.1 already exists"
 else
-    echo "extractint coquelicot-2.1.1 directory"
-    tar -xvzf coquelicot-2.1.1.tar.gz
+    echo "extracting coquelicot-3.0.1 directory"
+    tar -xvzf coquelicot-3.0.1.tar.gz
 fi
 
 function get_deps () {
@@ -75,8 +75,8 @@ do
 					if [ -e "coq-tools/${f}.v" ]
 					then deps+=("coq-tools/$f")
 					else
-					    if [ -e "coquelicot-2.1.1/theories/${f}.v" ]
-					    then deps+=("coquelicot-2.1.1/theories/$f")
+					    if [ -e "coquelicot-3.0.1/theories/${f}.v" ]
+					    then deps+=("coquelicot-3.0.1/theories/$f")
 					    else echo "${f} doesn't exist" >> debug
 					    fi
 					fi
@@ -121,6 +121,7 @@ echo "	rm -f substitution/.*.aux substitution/*.glob substitution/*.vo" >> Makef
 echo "	rm -f axioms/.*.aux       axioms/*.glob       axioms/*.vo"       >> Makefile
 echo "	rm -f checker/.*.aux      checker/*.glob      checker/*.vo"      >> Makefile
 echo "	rm -f examples/.*.aux     examples/*.glob     examples/*.vo"     >> Makefile
+echo "	rm -f coq-tools/.*.aux    coq-tools/*.glob    coq-tools/*.vo"    >> Makefile
 
 for i in "${!aa[@]}"
 do
@@ -144,5 +145,5 @@ do
     fi
 
     echo "" >> Makefile
-    echo "	coqc -R coq-tools util -R coquelicot-2.1.1 coquelicot -R syntax syntax -R semantics semantics -R substitution substitution -R axioms axioms -R checker checker -R examples examples ${i}.v" >> Makefile
+    echo "	coqc -R coq-tools util -R coquelicot-3.0.1 coquelicot -R syntax syntax -R semantics semantics -R substitution substitution -R axioms axioms -R checker checker -R examples examples ${i}.v" >> Makefile
 done

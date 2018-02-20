@@ -1,5 +1,5 @@
 -R coq-tools util
--R coquelicot-2.1.1 coquelicot
+-R coquelicot-3.0.1 coquelicot
 -R syntax syntax
 -R semantics semantics
 -R substitution substitution

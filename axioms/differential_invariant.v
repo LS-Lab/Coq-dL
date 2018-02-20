@@ -1,6 +1,8 @@
 (*
 
   Copyright 2016 University of Luxembourg
+  Copyright 2017 University of Luxembourg
+  Copyright 2018 University of Luxembourg
 
   This file is part of our formalization of Platzer's
     "A Complete Uniform Substitution Calculus for Differential Dynamic Logic"
@@ -364,11 +366,11 @@ Proof.
     [|assert (~ In assignx (ode_footprint I (ODEconst odec))) as ni;
       [introv ix;
        unfold ode_footprint in ix; apply in_app_iff in ix; repndors; simpl in ix; tcsp;
-       apply var_not_in_ode_footprint_diff in ix; auto
-      |];
+       apply var_not_in_ode_footprint_diff in ix; auto|];
       pose proof (cr assignx ni) as ex;
-      rewrite <- ex; rewrite <- xx; auto
-    ];[].
+      rewrite <- ex; clear ex;
+      assert (R0 = 0%R) as zz by auto; rewrite zz; clear zz;
+      rewrite <- xx; auto];[].
 
   assert (forall z,
              (0 <= z)%R

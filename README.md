@@ -50,13 +50,12 @@ Install and Dependencies
 ------------------------
 
 
-* Our formalization compiles with Coq 8.5pl2 (I've been told it works
-with 8.5pl1 too), which you can get through opam.
-[Here](https://opam.ocaml.org/doc/Usage.html)'s how to get started
-with opam.  We're using opam version 1.2.2 and we're using OCaml
-version 4.03.0.  You might have to switch the OCaml version in opam,
-using `opam switch`.  To get Coq through opam, you have to add the
-following repository:
+* Our formalization compiles with Coq 8.7.1, which you can get through
+opam.  [Here](https://opam.ocaml.org/doc/Usage.html)'s how to get
+started with opam.  We're using opam version 1.2.2 and we're using
+OCaml version 4.06.0.  You might have to switch the OCaml version in
+opam, using `opam switch`.  To get Coq through opam, you have to add
+the following repository:
 
     `opam repo add coq-released https://coq.inria.fr/opam/released`
 
@@ -74,14 +73,14 @@ You can find ProofGeneral and instructions on how to install it
 
    `(setq coq-compile-before-require t)`
 
-* We are using version 2.1.1 of the
+* We are using version 3.0.1 of the
 [coquelicot](http://coquelicot.saclay.inria.fr/) library for real
 analysis.  There is a .tag.gz archive in this repository (they don't
 seem to have a git repository).  Just untar it to start using it.  It
-requires ssreflect (we're using version 1.6).  The best way to get
+requires ssreflect (we're using version 1.6.4).  The best way to get
 ssreflect is through opam by running:
 
-    `opam install coq-mathcomp-ssreflect.1.6`.
+    `opam install coq-mathcomp-ssreflect`.
 
 * If you've cloned this repository, you'll need to pull the submodules
 by running:
