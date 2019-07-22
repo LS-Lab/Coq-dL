@@ -27,7 +27,7 @@
 
  *)
 
-Require Export Coquelicot.
+Require Export Coquelicot.Coquelicot.
 Require Export US_lemmas.
 
 

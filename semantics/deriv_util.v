@@ -29,7 +29,7 @@
 
 Require Export tactics_util.
 Require Export reals_util.
-Require Export Derive.
+Require Export Coquelicot.Derive.
 Require Export Eqdep_dec.
 Require Export Omega.
 
@@ -46,10 +46,8 @@ Require Export Omega.
  *)
 
 
-
-
-Definition locally_R := @Hierarchy.locally (Hierarchy.AbsRing_UniformSpace Hierarchy.R_AbsRing).
-Definition ex_derive_R := @ex_derive Hierarchy.R_AbsRing Hierarchy.R_NormedModule.
+Definition locally_R   := @Coquelicot.Hierarchy.locally (Coquelicot.Hierarchy.AbsRing_UniformSpace Coquelicot.Hierarchy.R_AbsRing).
+Definition ex_derive_R := @ex_derive Coquelicot.Hierarchy.R_AbsRing Hierarchy.R_NormedModule.
 Definition is_derive_R := @is_derive Hierarchy.R_AbsRing Hierarchy.R_NormedModule.
 
 Definition ex_derive_all f := forall pt, ex_derive_R f pt.

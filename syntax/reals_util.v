@@ -30,7 +30,7 @@
 
 Require Export Reals.
 Require Export tactics2.
-Require Export Rcomplements.
+Require Export Coquelicot.Rcomplements.
 
 (*Require Export CoRN.reals.CReals.*)
 

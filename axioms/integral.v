@@ -1,4 +1,4 @@
-Require Export Coquelicot.
+Require Export Coquelicot.Coquelicot.
 Require Export reals_util.
 Require Export deriv_util.
 
@@ -16,8 +16,8 @@ Qed.
 
 Require Import Reals Psatz.
 Require Import mathcomp.ssreflect.ssreflect mathcomp.ssreflect.ssrbool mathcomp.ssreflect.eqtype mathcomp.ssreflect.seq.
-Require Import Markov Rcomplements Rbar Lub Lim_seq Derive SF_seq.
-Require Import Continuity Hierarchy Seq_fct RInt PSeries.
+Require Import Coquelicot.Markov Coquelicot.Rcomplements Coquelicot.Rbar Coquelicot.Lub Coquelicot.Lim_seq Coquelicot.Derive Coquelicot.SF_seq.
+Require Import Coquelicot.Continuity Coquelicot.Hierarchy Coquelicot.Seq_fct Coquelicot.RInt Coquelicot.PSeries.
 
 
 Lemma is_RInt_derive_sp (f df : R -> R) (a b c : R) :

@@ -1962,7 +1962,7 @@ Proof.
 Qed.
 
 
-Fixpoint free_vars_hyp (h : hypothesis) : EAssignables :=
+Definition free_vars_hyp (h : hypothesis) : EAssignables :=
   free_vars_formula (hyp_form h).
 
 Fixpoint free_vars_hyps (H : hypotheses) : EAssignables :=

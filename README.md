@@ -14,7 +14,7 @@ formalization:
 * We described our formalization in the following paper:
   [Formally verified differential dynamic logic](http://dx.doi.org/10.1145/3018610.3018616),
   [Brandon Bohrer](http://www.cs.cmu.edu/~bbohrer),
-  [Vincent Rahli](http://wwwen.uni.lu/snt/people/vincent_rahli),
+  [Vincent Rahli](http://www.cs.bham.ac.uk/~rahliv/),
   [Ivana Vukotic](http://wwwen.uni.lu/snt/people/ivana_vukotic),
   [Marcus Völp](http://wwwen.uni.lu/snt/people/marcus_voelp)
   and [André Platzer](http://symbolaris.com),
@@ -34,15 +34,14 @@ formalization:
 Contributors
 ------------
 
-* [Vincent Rahli](http://wwwen.uni.lu/snt/people/vincent_rahli)
-* [Marcus Völp](http://wwwen.uni.lu/snt/people/marcus_voelp)
+* [Vincent Rahli](http://www.cs.bham.ac.uk/~rahliv/)
 * [Ivana Vukotic](http://wwwen.uni.lu/snt/people/ivana_vukotic)
+* [Marcus Völp](http://wwwen.uni.lu/snt/people/marcus_voelp)
 
-If you have any question, please send an email to either of us
-(preferably Vincent).  You can find our email addresses on the [CritiX
-webpage](http://wwwen.uni.lu/snt/research/critix/).
+If you have any question, please send an email to
+[Vincent](http://www.cs.bham.ac.uk/~rahliv/).
 
-This work is supported by the SnT and the National Research Fund
+This work was supported by the SnT and the National Research Fund
 Luxembourg (FNR), through PEARL grant FNR/P14/8149128.
 
 
@@ -50,49 +49,29 @@ Install and Dependencies
 ------------------------
 
 
-* Our formalization compiles with Coq 8.7.1, which you can get through
+* Our formalization compiles with Coq 8.9.1, which you can get through
 opam.  [Here](https://opam.ocaml.org/doc/Usage.html)'s how to get
-started with opam.  We're using opam version 1.2.2 and we're using
-OCaml version 4.06.0.  You might have to switch the OCaml version in
-opam, using `opam switch`.  To get Coq through opam, you have to add
-the following repository:
-
-    `opam repo add coq-released https://coq.inria.fr/opam/released`
-
-    after that you can run:
+started with opam.  We're using opam version 2.0.3 and we're using
+OCaml version 4.05.0.  You might have to switch the OCaml version in
+opam, using `opam switch`.  To get Coq through opam, simply type:
 
     `opam install coq`
 
 * We're editing files using the ProofGeneral Emacs interface for Coq.
 You can find ProofGeneral and instructions on how to install it
-[here](https://github.com/ProofGeneral/PG).
+[here](https://proofgeneral.github.io/).
 
-* Here's what I've got regarding ProofGeneral in my .emacs.el file:
-
-   `(load "~/.emacs.d/lisp/PG/generic/proof-site")`
-
-   `(setq coq-compile-before-require t)`
-
-* We are using version 3.0.1 of the
+* We are using version 3.0.2 of the
 [coquelicot](http://coquelicot.saclay.inria.fr/) library for real
-analysis.  There is a .tag.gz archive in this repository (they don't
-seem to have a git repository).  Just untar it to start using it.  It
-requires ssreflect (we're using version 1.6.4).  The best way to get
-ssreflect is through opam by running:
+analysis, which you can get through opam:
+
+   `opam install coq-coquelicot`
+
+Coquelicot depends on ssreflect.  Installing coquelicot through opam
+should install ssreflect as well.  If for some reason you want to
+install it manually, simply type:
 
     `opam install coq-mathcomp-ssreflect`.
-
-* If you've cloned this repository, you'll need to pull the submodules
-by running:
-
-    `git submodule init`
-
-    followed by:
-
-    `git submodule update`.
-
-    Otherwise, if it's an archive you've got, they should be part of the
-archive (only the coq-tools directory for the archive).
 
 * To compile all files you can evaluate in all.v using ProofGeneral,
 which is going to compile our examples and their dependencies.
@@ -110,13 +89,13 @@ project).  Make sure that you've pulled the submodules before you run
 right.
 
 * If you want to use ProofGeneral, and you're not sure what to do,
-here's what you can try to do: open all.v using Emacs.  If you've
+here's what you can try to do: open all.v using Emacs. If you've
 installed ProofGeneral as instructed above, the ProofGeneral logo
-should appear when you start Emacs.  If not, something went wrong.  If
+should appear when you start Emacs. If not, something went wrong. If
 the logo does show up in your Emacs buffer, then go to the end of the
-file and hit C-c C-RET.  Assuming that you set the
-`coq-compile-before-require` variable to true, it should compile the
-file and all its dependencies.
+file and hit C-c C-RET. Assuming that the `coq-compile-before-require`
+variable is set to true, it should compile the file and all its
+dependencies.
 
 * If you want to try to prove something yourself, look for example
 at examples/example1.v.

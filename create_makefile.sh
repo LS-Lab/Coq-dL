@@ -1,13 +1,5 @@
 #!/bin/bash
 
-if [ -e "coquelicot-3.0.1" ]
-then
-    echo "coquelicot-3.0.1 already exists"
-else
-    echo "extracting coquelicot-3.0.1 directory"
-    tar -xvzf coquelicot-3.0.1.tar.gz
-fi
-
 function get_deps () {
     grep "^Require" $1.v \
     | sed 's/Require Import \(.*\)\..*$/\1/' \
@@ -74,11 +66,7 @@ do
 				    else
 					if [ -e "coq-tools/${f}.v" ]
 					then deps+=("coq-tools/$f")
-					else
-					    if [ -e "coquelicot-3.0.1/theories/${f}.v" ]
-					    then deps+=("coquelicot-3.0.1/theories/$f")
-					    else echo "${f} doesn't exist" >> debug
-					    fi
+					else echo "${f} doesn't exist" >> debug
 					fi
 				    fi
 				fi
@@ -86,13 +74,13 @@ do
 			fi
 		    fi
 		fi
-	    fi	    
+	    fi
 	done
 	#printf '%s\n' "++=++ ${deps[@]} ++=++"
 	#deps=("${temp[@]}")
 
 	aa[$file]=${deps[@]}
-   
+
 	for i in "${deps[@]}"
 	do
 	    #echo "checking $i"
@@ -145,5 +133,5 @@ do
     fi
 
     echo "" >> Makefile
-    echo "	coqc -R coq-tools util -R coquelicot-3.0.1 coquelicot -R syntax syntax -R semantics semantics -R substitution substitution -R axioms axioms -R checker checker -R examples examples ${i}.v" >> Makefile
+    echo "	coqc -R coq-tools util -R syntax syntax -R semantics semantics -R substitution substitution -R axioms axioms -R checker checker -R examples examples ${i}.v" >> Makefile
 done
