@@ -29,7 +29,6 @@
 
 
 Require Export checker.
-Require Export notation.
 
 
 (* v≥0∧A≥0 → [x'=v,v'=A&true] v≥0 *)
