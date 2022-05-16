@@ -13,7 +13,7 @@ formalization:
 
 * We described our formalization in the following paper:
   [Formally verified differential dynamic logic](http://dx.doi.org/10.1145/3018610.3018616),
-  [Brandon Bohrer](http://www.cs.cmu.edu/~bbohrer),
+  Rose Bohrer,
   [Vincent Rahli](http://www.cs.bham.ac.uk/~rahliv/),
   [Ivana Vukotic](http://wwwen.uni.lu/snt/people/ivana_vukotic),
   [Marcus Völp](http://wwwen.uni.lu/snt/people/marcus_voelp)
@@ -21,7 +21,7 @@ formalization:
   [CPP 2017](http://cpp2017.mpi-sws.org).
 
 * The above paper covers both our Coq formalization and
-  [Brandon](http://www.cs.cmu.edu/~bbohrer)'s
+  Rose's
   [Isabelle/HOL formalization](https://github.com/LS-Lab/Isabelle-dL).
 
 * KeYmaeraX sourcecode is available

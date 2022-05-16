@@ -117,7 +117,7 @@ Fixpoint swap_term (sw : swapping) (t : Term) : Term :=
  *)
 Definition swap_atomic_ode (sw : swapping) (o : AtomicODE) : AtomicODE :=
   match o with
-  | ODEconst c   => ODEconst c (* undefined in Brandon's implementation *)
+  | ODEconst c   => ODEconst c (* undefined in Rose's implementation *)
   | ODEsing xp t => ODEsing  (swap_assgn sw xp) (swap_term sw t)
   end.
 

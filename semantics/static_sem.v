@@ -60,7 +60,7 @@ Definition VandD (ds : Assign) : EAssignables :=
   FCS_finite [KD ds; ds].
 
 
-(* based on Brandon's implementation *)
+(* based on Rose's implementation *)
 Definition bound_vars_atomic_ode (ode : AtomicODE) : EAssignables :=
   match ode with
   | ODEconst name => FCS_infinite []
